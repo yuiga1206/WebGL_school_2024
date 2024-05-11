@@ -106,11 +106,12 @@ class ThreeApp {
     this.isDown = false;
 
     // キーの押下や離す操作を検出できるようにする @@@
+    // ★★ keyboardEventオブジェクトが渡させる。
     window.addEventListener('keydown', (keyEvent) => {
       // スペースキーが押されている場合はフラグを立てる
       switch (keyEvent.key) {
-        case ' ':
-          this.isDown = true;
+        case ' ':// ★★ 半角スペースが入っている。
+          this.isDown = true;// ★★ キーが押されているかどうかのフラグ。
           break;
         default:
       }
@@ -128,8 +129,9 @@ class ThreeApp {
     // 恒常ループの設定
     requestAnimationFrame(this.render);
 
-    // コントロールを更新
-    this.controls.update();
+    // コントロールを更新（実際は呼ばなくても更新はされる。）
+    // this.controls.update();
+    // ★★ 書かなくても大丈夫になっている。
 
     // フラグに応じてオブジェクトの状態を変化させる @@@
     if (this.isDown === true) {
