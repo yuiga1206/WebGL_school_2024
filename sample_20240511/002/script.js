@@ -21,6 +21,7 @@
 
 import * as THREE from '../lib/three.module.js';
 import { OrbitControls } from '../lib/OrbitControls.js'; // @@@
+// ★★ カメラを動かすことが出来るようになる。three.jsを補助する機能郡の一部。
 
 window.addEventListener('DOMContentLoaded', () => {
   const wrapper = document.querySelector('#webgl');
@@ -62,6 +63,7 @@ class ThreeApp {
   material; // マテリアル
   box;      // ボックスメッシュ
   controls; // オービットコントロール @@@
+  // ★★ 代入するためのプロパティを作っておく。
 
   /**
    * コンストラクタ
@@ -104,6 +106,7 @@ class ThreeApp {
     // 視しながらその周囲を回転するカメラコントロールを可能にします。
     // ------------------------------------------------------------------------
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // ★★ canvasの上で動かせるカメラを生成する。
 
     // render メソッドはブラウザ制御で再帰的に呼び出されるので this を固定する @@@
     // - JavaScript における this ---------------------------------------------
@@ -116,6 +119,7 @@ class ThreeApp {
     // 性を踏まえ、あらかじめ this を固定するということを行っています。
     // ------------------------------------------------------------------------
     this.render = this.render.bind(this);
+    // ★★ コンストラクタの中なので、thisは絶対に自分なので、ここでbindしてる。
   }
 
   /**
@@ -134,13 +138,39 @@ class ThreeApp {
     // 更新されると同時に再度 render が呼ばれるようにしています。
     // ------------------------------------------------------------------------
     // 恒常ループの設定 @@@
-    requestAnimationFrame(this.render);
+    // ★★ 引数に与えられた関数を、次の画面の更新時に呼び出してくれる。
+    requestAnimationFrame(this.render);// ★★ ブラウザのjsとして、グローバルにある関数。thisがついていない。
+    // ★★ ブラウザが自動的に、次回の更新に合わせて、レンダリングしてくれる。
+
+    // ★★ 固定していないと二回目のthisがアンディファインドになる。
+    // ★★ 最初はappがrenderを呼んでいる。だからthisはThreeAppになる。
+    // ★★ しかしrequestAnimationFrameを二回目に呼ぶときは、jsが勝手にrenderを呼んでいるので、thisがなくなる。
+    // ★★ なので「this.render = this.render.bind(this);」というようにthisを固定する。
+
+    // ★★ アロー関数で書くことで、this.render.bind(this) を省略できる？
+    // ★★ requestAnimationFrame(() => {
+    // ★★   this.render();
+    // ★★ });
+    // ★★ 無駄な関数が毎回作られると思ってしまうので、やらない…。書けるは書ける。
+
+    // ★★ アロー関数を使うとthisが固定される。
+    // ★★ jsのそういう仕様です…。
+    // ★★ 一回目の正しいthisのときにthisが固定されるので、「thisが固定される」ということ。
+    // ★★ ↓この状態だとthisは固定されない。あくまでアロー関数だけ！
+    // ★★ requestAnimationFrame(function(){
+    // ★★   this.render();
+    // ★★ });
+
+
+
 
     // コントロールを更新 @@@
     this.controls.update();
+    // ★★ カメラの位置が動いて……
 
     // レンダラーで描画
     this.renderer.render(this.scene, this.camera);
+    // ★★ カメラの位置が動いて……レンダリングする。
   }
 }
 

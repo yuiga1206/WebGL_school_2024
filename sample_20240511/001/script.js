@@ -24,26 +24,29 @@
 // ----------------------------------------------------------------------------
 
 // 必要なモジュールを読み込み
-import * as THREE from '../lib/three.module.js';
+import * as THREE from '../lib/three.module.js';// ★★ THREEというエイリアスにして使えるようにしている。「THREE」が出てきたらthree.jsの機能を使っている。
 
 // DOM がパースされたことを検出するイベントを設定
 window.addEventListener('DOMContentLoaded', () => {
+  // ★★ windowオブジェクトのaddEventListenerメソッドで、第一引数にイベントを設定する。DOMContentLoadedは一番下までロードが終わったときに発生するイベント。
+  // ★★ windowに対して、ロードが終わったら実行しろよ、と予約をしている。
+
   // HTML 上に定義されている親要素用への参照を取得
   const wrapper = document.querySelector('#webgl');
   // 制御クラスのインスタンスを生成
-  const app = new ThreeApp(wrapper);
+  const app = new ThreeApp(wrapper);// ★★ 引数はconstructorの定義箇所を見に行く。
   // 描画
-  app.render();
+  app.render();// ★★ ThreeAppのrenderメソッドを使用している。
 }, false);
 
 /**
  * three.js を効率よく扱うために自家製の制御クラスを定義
  */
-class ThreeApp {
+class ThreeApp {// ★★ クラスを定義して、その中のメソッドを使う。
   /**
    * カメラ定義のための定数
    */
-  static CAMERA_PARAM = {
+  static CAMERA_PARAM = {// ★★ 大文字のstaticな変数は、定数的に使用する。
     fovy: 60,
     aspect: window.innerWidth / window.innerHeight,
     near: 0.1,
@@ -78,17 +81,27 @@ class ThreeApp {
    * @constructor
    * @param {HTMLElement} wrapper - canvas 要素を append する親要素
    */
-  constructor(wrapper) {
+  constructor(wrapper) {// ★★ ThreeAppクラスがnewされたときに実行される
     // - レンダラの初期化 -----------------------------------------------------
     // レンダラ、という言葉はフロントエンドではあまり見聞きしない言葉です。わか
     // りやすく言うなら、レンダラとは「現像する人」です。カメラが撮影したフィル
     // ムを、現像してスクリーンに映してくれる役割を担います。
     // ------------------------------------------------------------------------
-    const color = new THREE.Color(ThreeApp.RENDERER_PARAM.clearColor);
+    const color = new THREE.Color(ThreeApp.RENDERER_PARAM.clearColor);// ★★ Colorクラスを使っている。Colorクラスを知りたかったら、公式ドキュメントを見に行く。https://threejs.org/docs/#api/en/math/Color
+    // ★★ Colorオブジェクトを暗めのグレーでまずは生成。
+
+    // ★★ WebGLRendererクラスは描画を行う役割を担うクラス。プロジェクター。
     this.renderer = new THREE.WebGLRenderer();
+    // ★★ クリアする色をColorオブジェクトで指定。単純に単色で背景を塗りつぶすもの。
     this.renderer.setClearColor(color);
     this.renderer.setSize(ThreeApp.RENDERER_PARAM.width, ThreeApp.RENDERER_PARAM.height);
-    wrapper.appendChild(this.renderer.domElement);
+    wrapper.appendChild(this.renderer.domElement);// ★★ domElementプロパティ === Canvas要素
+    // ★★ wrapperにcanvas要素をappendする。
+
+    // ★★ thisにはThreeAppの実体化したインスタンスが入っている。
+    // ★★ クラスの中だと：this.renderer
+    // ★★ クラスの外だと：app.renderer
+
 
     // - シーンの初期化 -------------------------------------------------------
     // Scene とは、その名のとおり 3D シーンを管理するためのものです。
@@ -98,7 +111,7 @@ class ThreeApp {
     // 3D の専門用語では、いわゆるシーングラフ（Scene Graph）と呼ばれているもの
     // で、three.js ではこれを Scene オブジェクトによって実現します。
     // ------------------------------------------------------------------------
-    this.scene = new THREE.Scene();
+    this.scene = new THREE.Scene();// ★★ 3D空間全体をscene（シーン）と呼ぶ。
 
     // - カメラの初期化 -------------------------------------------------------
     // three.js におけるカメラは、現実世界のカメラと同じように空間を撮影するため
@@ -124,28 +137,34 @@ class ThreeApp {
     // three.js では、どのような色を塗るのかなど質感に関する設定はマテリアルとい
     // うオブジェクトがそれを保持するようになっています。
     // ------------------------------------------------------------------------
+    // ★★ 形状・骨格
     this.geometry = new THREE.BoxGeometry(1.0, 1.0, 1.0);
+    // ★★ 見た目の色、表面の質感
+    // ★★ Materialクラスを継承しているので、ドキュメントを見るときは注意。遡る必要があるかも。
     this.material = new THREE.MeshBasicMaterial(ThreeApp.MATERIAL_PARAM);
+
 
     // - メッシュの初期化 -----------------------------------------------------
     // three.js では、ジオメトリとマテリアルを別々に生成し組み合わせることで 3D
     // 空間に配置することができるメッシュを定義できます。
     // 定義したメッシュは、シーンに追加することではじめて描画の対象になります。
     // ------------------------------------------------------------------------
+    // ★★ メッシュ　＝　面を持つ３次元オブジェクト
     this.box = new THREE.Mesh(this.geometry, this.material);
+    // ★★ 生成したメッシュをシーンに追加。
     this.scene.add(this.box);
   }
 
   /**
    * 描画処理
    */
-  render() {
+  render() {// ★★ renderメソッドを定義している。
     // - 描画フェーズ ---------------------------------------------------------
     // シーンに必要なオブジェクトを追加できたら、いよいよ描画です。
     // 描画を行うためには対象のシーンをレンダラでスクリーンに描画します。このと
     // き、どのカメラで描画するかを同時に指定します。
     // ------------------------------------------------------------------------
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);// ★★ 一回しか描画してない。静止画と同じ。
   }
 }
 
