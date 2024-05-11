@@ -124,6 +124,7 @@ class ThreeApp {
     // れない反射光ならではの特徴です。
     // ------------------------------------------------------------------------
     this.material = new THREE.MeshPhongMaterial(ThreeApp.MATERIAL_PARAM);
+    // ★★ マテリアルが変わるので、見た目も変わる。
 
     // メッシュ
     this.box = new THREE.Mesh(this.geometry, this.material);
