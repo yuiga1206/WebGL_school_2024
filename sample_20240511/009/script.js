@@ -120,12 +120,12 @@ class ThreeApp {
     this.scene.add(this.ambientLight);
 
     // マテリアル
-    this.material = new THREE.MeshPhongMaterial(ThreeApp.MATERIAL_PARAM);
+    this.material = new THREE.MeshPhongMaterial(ThreeApp.MATERIAL_PARAM);// ★★ ループの外に書くこと！使い回すので1度の記述で良いので、ループの中に書かない。
 
     // 共通のジオメトリ、マテリアルから、複数のメッシュインスタンスを作成する @@@
     const torusCount = 10;
     const transformScale = 5.0;
-    this.torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 8, 16);
+    this.torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 8, 16);// ★★ ループの外に書くこと！使い回すので1度の記述で良いので、ループの中に書かない。
     this.torusArray = [];
     for (let i = 0; i < torusCount; ++i) {
       // トーラスメッシュのインスタンスを生成
