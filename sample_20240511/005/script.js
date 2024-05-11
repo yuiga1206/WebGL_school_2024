@@ -44,7 +44,8 @@ class ThreeApp {
   static DIRECTIONAL_LIGHT_PARAM = {
     color: 0xffffff,                            // 光の色
     intensity: 1.0,                             // 光の強度
-    position: new THREE.Vector3(1.0, 1.0, 1.0), // 光の向き
+    position: new THREE.Vector3(1.0, 1.0, 1.0), // 光の向き(XYZ)
+    // ★★ Xに1移動したところから光があたっている。
   };
   /**
    * マテリアル定義のための定数
@@ -96,7 +97,11 @@ class ThreeApp {
       ThreeApp.DIRECTIONAL_LIGHT_PARAM.intensity
     );
     this.directionalLight.position.copy(ThreeApp.DIRECTIONAL_LIGHT_PARAM.position);
+    // ★★ 代入するのではなくコピーしている。
+    // ★★ 直接代入だと、定数として定義した Vector3 が参照が代入されるので、事故る可能性がある。。。
     this.scene.add(this.directionalLight);
+    // ★★ これもObject3Dクラスを継承している。
+
 
     // ジオメトリ
     this.geometry = new THREE.BoxGeometry(1.0, 1.0, 1.0);
