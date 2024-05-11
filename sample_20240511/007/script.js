@@ -126,6 +126,7 @@ class ThreeApp {
 
     // マテリアル
     this.material = new THREE.MeshPhongMaterial(ThreeApp.MATERIAL_PARAM);
+    // ★★ マテリアルは一つだけを使い回す！
 
     // 各種ジオメトリからメッシュを生成し、シーンに追加する @@@
     this.boxGeometry = new THREE.BoxGeometry(1.0, 1.0, 1.0);
