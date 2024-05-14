@@ -27,9 +27,9 @@ class ThreeApp {
     // 描画する空間のニアクリップ面（最近面）
     near: 0.1,
     // 描画する空間のファークリップ面（最遠面）
-    far: 20.0,
+    far: 50.0,
     // カメラの座標
-    position: new THREE.Vector3(0.0, 2.0, 10.0),
+    position: new THREE.Vector3(0.0, 2.0, 30.0),
     // カメラの注視点
     lookAt: new THREE.Vector3(0.0, 0.0, 0.0),
   };
@@ -69,8 +69,11 @@ class ThreeApp {
   directionalLight; // 平行光源（ディレクショナルライト）
   ambientLight;     // 環境光（アンビエントライト）
   material;         // マテリアル
-  torusGeometry;    // トーラスジオメトリ
-  torusArray;       // トーラスメッシュの配列 @@@
+  // torusGeometry;    // トーラスジオメトリ
+  // torusArray;       // トーラスメッシュの配列 @@@
+  boxGeometry;      // ボックスジオメトリ
+  boxArray01;       // ボックスメッシュの配列
+  boxArray02;       // ボックスメッシュの配列
   controls;         // オービットコントロール
   axesHelper;       // 軸ヘルパー
   isDown;           // キーの押下状態用フラグ
@@ -120,22 +123,78 @@ class ThreeApp {
     this.material = new THREE.MeshPhongMaterial(ThreeApp.MATERIAL_PARAM);// ★★ ループの外に書くこと！使い回すので1度の記述で良いので、ループの中に書かない。
 
     // 共通のジオメトリ、マテリアルから、複数のメッシュインスタンスを作成する @@@
-    const torusCount = 10;
+    // const torusCount = 100;
+    // const transformScale = 5.0;
+    // this.torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 8, 16);// ★★ ループの外に書くこと！使い回すので1度の記述で良いので、ループの中に書かない。
+    // this.torusArray = [];
+    // for (let i = 0; i < torusCount; ++i) {
+    //   // トーラスメッシュのインスタンスを生成
+    //   const torus = new THREE.Mesh(this.torusGeometry, this.material);
+    //   // 座標をランダムに散らす
+    //   torus.position.x = (Math.random() * 2.0 - 1.0) * transformScale;
+    //   torus.position.y = (Math.random() * 2.0 - 1.0) * transformScale;
+    //   torus.position.z = (Math.random() * 2.0 - 1.0) * transformScale;
+    //   // シーンに追加する
+    //   this.scene.add(torus);
+    //   // 配列に入れておく
+    //   this.torusArray.push(torus);
+    // }
+    const boxCount = 136;
     const transformScale = 5.0;
-    this.torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 8, 16);// ★★ ループの外に書くこと！使い回すので1度の記述で良いので、ループの中に書かない。
-    this.torusArray = [];
-    for (let i = 0; i < torusCount; ++i) {
+    this.boxGeometry = new THREE.BoxGeometry(1.0, 1.0, 1.0);
+    this.boxArray01 = [];
+    this.boxArray02 = [];
+    for (let i = 0; i < boxCount; ++i) {
       // トーラスメッシュのインスタンスを生成
-      const torus = new THREE.Mesh(this.torusGeometry, this.material);
+      const box = new THREE.Mesh(this.boxGeometry, this.material);
       // 座標をランダムに散らす
-      torus.position.x = (Math.random() * 2.0 - 1.0) * transformScale;
-      torus.position.y = (Math.random() * 2.0 - 1.0) * transformScale;
-      torus.position.z = (Math.random() * 2.0 - 1.0) * transformScale;
-      // シーンに追加する
-      this.scene.add(torus);
-      // 配列に入れておく
-      this.torusArray.push(torus);
+      // box.position.x = (Math.random() * 2.0 - 1.0) * transformScale;
+      // box.position.y = (Math.random() * 2.0 - 1.0) * transformScale;
+      // box.position.z = (Math.random() * 2.0 - 1.0) * transformScale;
+      box.position.x = i + 1;
+      // x軸の指定
+      switch (i) {
+        case 6: case 22: case 26: case 31: case 74: case 90: case 94: case 99:
+          box.position.x = -17;
+          break;
+        case 7: case 75:
+          box.position.x = -16;
+          break;
+        case 8: case 76:
+          box.position.x = -15;
+          break;
+        case 9: case 62: case 77: case 130:
+          box.position.x = -14;
+          break;
+        case 0: case 3: case 10: case 63: case 68: case 71: case 78: case 131:
+          box.position.x = -13;
+          break;
+      
+        default:
+          break;
+      }
+      // y軸の指定
+      switch (i) {
+        case 0: case 1: case 2: case 68: case 69: case 70:
+          box.position.y = 6;
+          break;
+        case 3: case 4: case 5: case 71: case 72: case 73:
+          box.position.y = 5;
+          break;
+      
+        default:
+          break;
+      }
+      if (i < 68) {
+        this.scene.add(box);
+        this.boxArray01.push(box);
+      } else {
+        box.position.z = -1;
+        this.scene.add(box);
+        this.boxArray02.push(box);
+      }
     }
+
 
     // 軸ヘルパー
     const axesBarLength = 5.0;
@@ -185,8 +244,14 @@ class ThreeApp {
     // フラグに応じてオブジェクトの状態を変化させる
     if (this.isDown === true) {
       // Y 軸回転 @@@
-      this.torusArray.forEach((torus) => {
-        torus.rotation.y += 0.05;
+      // this.torusArray.forEach((torus) => {
+      //   torus.rotation.y += 0.05;
+      // });
+      this.boxArray01.forEach((box) => {
+        box.rotation.y += 0.05;
+      });
+      this.boxArray02.forEach((box) => {
+        box.rotation.y += 0.03;
       });
     }
 
