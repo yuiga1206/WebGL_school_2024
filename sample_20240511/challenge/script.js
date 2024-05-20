@@ -18,6 +18,10 @@ window.addEventListener('DOMContentLoaded', () => {
 // キャラクター表示・非表示切り替えのフラグ
 let character01_flag = true;
 
+// ライトのフラグ
+let directionalLight_x_flag = true;
+let directionalLight_y_flag = true;
+
 
 class ThreeApp {
   /**
@@ -50,8 +54,8 @@ class ThreeApp {
    */
   static DIRECTIONAL_LIGHT_PARAM = {
     color: 0xffffff,                            // 光の色
-    intensity: 1.0,                             // 光の強度
-    position: new THREE.Vector3(1.0, 1.0, 1.0), // 光の向き
+    intensity: 2.0,                             // 光の強度
+    position: new THREE.Vector3(0.0, 0.0, 3.0), // 光の向き
   };
   /**
    * アンビエントライト定義のための定数
@@ -199,13 +203,6 @@ class ThreeApp {
     this.characterArray01 = [];
     this.characterArray02 = [];
     for (let i = 0; i < boxCount_01; ++i) {
-      // トーラスメッシュのインスタンスを生成
-      // const box = new THREE.Mesh(this.boxGeometry, this.material_01);
-      // 座標をランダムに散らす
-      // character01.position.x = (Math.random() * 2.0 - 1.0) * transformScale;
-      // character01.position.y = (Math.random() * 2.0 - 1.0) * transformScale;
-      // character01.position.z = (Math.random() * 2.0 - 1.0) * transformScale;
-      // character01.position.x = i + 1;
       let character01;
 
       // 色の指定
@@ -397,12 +394,6 @@ class ThreeApp {
       }
       this.scene.add(character01);
       this.characterArray01.push(character01);
-      // if (i < 68) {
-      // } else {
-      //   // character01.position.z = -1;
-      //   this.scene.add(character01);
-      //   this.characterArray02.push(character01);
-      // }
     }
 
     for (let i = 0; i < boxCount_02; ++i) {
@@ -652,8 +643,6 @@ class ThreeApp {
       // this.torusArray.forEach((torus) => {
       //   torus.rotation.y += 0.05;
       // });
-      // this.scene.remove(character01);
-      // this.scene.add(character02);
       if (character01_flag) {
         setTimeout(() => {
           this.characterArray01.forEach((character01) => {
@@ -674,6 +663,34 @@ class ThreeApp {
           });
           character01_flag = true;
         }, 100);
+      }
+      
+      if(this.directionalLight.position.x <= -12) {
+        directionalLight_x_flag = false;
+      }
+      if(this.directionalLight.position.x >= 0) {
+        directionalLight_x_flag = true;
+      }
+      if(directionalLight_x_flag) {
+        this.directionalLight.position.x += -0.05;
+        // console.log("X：" + this.directionalLight.position.x);
+      } else {
+        this.directionalLight.position.x += 0.05;
+        // console.log("X：" + this.directionalLight.position.x);
+      }
+      
+      if(this.directionalLight.position.y >= 0) {
+        directionalLight_y_flag = true;
+      } 
+      if(this.directionalLight.position.y <= -12) {
+        directionalLight_y_flag = false;
+      }
+      if(directionalLight_y_flag) {
+        this.directionalLight.position.y += -0.05;
+        // console.log("Y：" + this.directionalLight.position.y);
+      } else {
+        this.directionalLight.position.y += 0.05;
+        // console.log("Y：" + this.directionalLight.position.y);
       }
     }
 
