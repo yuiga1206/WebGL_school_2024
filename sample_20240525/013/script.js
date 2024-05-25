@@ -19,6 +19,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // 非同期の読み込み処理 @@@
   await app.load();
+  // ★★ 読み込みが終わるまで待機。画像の読み込みが終わってから処理。
 
   // 読み込み処理が終わったあとで描画を開始 @@@
   app.render();
@@ -194,14 +195,15 @@ class ThreeApp {
   /**
    * アセット（素材）のロードを行う Promise @@@
    */
-  load() {
-    return new Promise((resolve) => {
+  load() {// ★★ loadメソッドが追加された。画像の読み込みが終わってから処理。
+    return new Promise((resolve) => {// ★★ 画像が読み込み終わったら、Promise が解決される。
       // 読み込む画像のパス
       const imagePath = './sample.jpg';
       // テクスチャ用のローダーのインスタンスを生成
       const loader = new THREE.TextureLoader();
       // ローダーの load メソッドに読み込む画像のパスと、ロード完了時のコールバックを指定
-      loader.load(imagePath, (texture) => {
+      loader.load(imagePath, (texture /* ★★ THREE.Texture テクスチャクラス */) => {
+        // ★★ 画像のロードが終わったら、第二引数の texture が呼び出される。
         // コールバック関数のパラメータとして、初期化済みのテクスチャオブジェクトが渡されてくる
         // マテリアルの map プロパティにテクスチャを指定すると、自動でマッピングされる
         this.material.map = texture;
