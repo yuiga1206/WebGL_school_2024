@@ -204,9 +204,11 @@ class ThreeApp {
     this.composer = new EffectComposer(this.renderer);
     // 2. コンポーザーに、まず最初に「レンダーパス」を設定する
     this.renderPass = new RenderPass(this.scene, this.camera);
-    this.composer.addPass(this.renderPass);
+    this.composer.addPass(this.renderPass);// ★★ 〇〇パスのインスタンスを渡す。
+      // ★★ どの順番で addPass するかは重要。順番によってふるまいが変わる。
     // 3. コンポーザーに第２のパスとして「グリッチパス」を設定する
     this.glitchPass = new GlitchPass();
+      // ★★ this.glitchPass = new GlitchPass(300);
     this.composer.addPass(this.glitchPass);
     // 4. グリッチパスまで終わったら画面に描画結果を出すよう指示する
     this.glitchPass.renderToScreen = true;
