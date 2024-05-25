@@ -118,6 +118,7 @@ class ThreeApp {
     // 共通のジオメトリ、マテリアルから、複数のメッシュインスタンスを作成する
     const torusCount = 10;
     const transformScale = 5.0;
+    // ★★ 頂点の定義、設計図＝ジオメトリ
     this.torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 8, 16);
     this.torusArray = [];
     for (let i = 0; i < torusCount; ++i) {
