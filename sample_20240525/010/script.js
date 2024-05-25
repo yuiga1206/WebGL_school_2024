@@ -23,7 +23,9 @@ class ThreeApp {
   /**
    * 切り取る空間の広さ @@@
    */
-  static CAMERA_SCALE = 5.0;
+  static CAMERA_SCALE = 5.0;// ★★ -5から5まで。
+  // ★★ 1000pxのディスプレイを見る場合、500を指定すると、-500~500で1000の広さになり、スクリーンサイズと位置が同じになるのでやりやすい。
+  // ★★ 通常はPerspectiveCameraで、モノを作るときだけ、OrthographicCamera で作ると3D空間のややこしい計算を抜きに作れるので便利。
   /**
    * レンダラー定義のための定数
    */
@@ -195,6 +197,7 @@ class ThreeApp {
   calcCameraParameter(scale) {
     const aspect = window.innerWidth / window.innerHeight; // アスペクト比
     const horizontal = scale * aspect;                     // 横方向のスケール
+    // ★★ 横のほうが広い場合が多いので、アス比に応じて広げる
     const vertiacal = scale;                               // 縦方向のスケール
     // - 平行投影の場合のパラメータ -------------------------------------------
     // PerspectiveCamera の場合、画角とアスペクト比を指定することで撮影する範囲
@@ -203,7 +206,7 @@ class ThreeApp {
     // PerspectiveCamera が四角錐のような空間の切り取り方となるのに対し、平行投
     // 影では空間は直方体の形になるため、最終的な描画結果も変化します。
     // ------------------------------------------------------------------------
-    return {
+    return {// ★★ オブジェクト。平行投影の場合、左や右を直接指定する。
       left: -horizontal,  // 切り取る空間の左端までの距離
       right: horizontal,  // 切り取る空間の右端までの距離
       top: vertiacal,     // 切り取る空間の上端までの距離
