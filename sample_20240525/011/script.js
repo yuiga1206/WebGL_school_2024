@@ -129,6 +129,8 @@ class ThreeApp {
     this.group = new THREE.Group();
     // グループはメッシュなどと同様に Object3D を継承しているのでシーンに追加できる
     this.scene.add(this.group);
+    // ★★ Object3D がそもそも子要素を持つことが出来る。
+    // ★★ Group オブジェクトは、ほぼ Object3D。そもそもGroup オブジェクトは無く、途中で three.js に追加された。
 
     // 共通のジオメトリ、マテリアルから、複数のメッシュインスタンスを作成する
     const torusCount = 10;
