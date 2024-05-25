@@ -194,8 +194,10 @@ class ThreeApp {
     this.glitchPass = new GlitchPass();
     this.composer.addPass(this.glitchPass);
     // 4. コンポーザーに第３のパスとして「ドットスクリーンパス」を設定する
+      // ★★ ドットスクリーンパス：白黒で新聞紙みたいなドットになる。
     this.dotScreenPass = new DotScreenPass();
     this.composer.addPass(this.dotScreenPass);
+      // ★★ ドットスクリーンパスの後にグリッチパスを addPass すると、グリッチは白黒にならない。
     // 5. パスの追加がすべて終わったら画面に描画結果を出すよう指示する
     this.dotScreenPass.renderToScreen = true;
 
