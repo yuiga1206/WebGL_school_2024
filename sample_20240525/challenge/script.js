@@ -69,13 +69,16 @@ class ThreeApp {
   static MATERIAL_PARAM = {
     color: 0xbbbbbb,
   };
-  static BLADE_MATERIAL_PARAM = {
-    // color: 0x929292,
-    // color: 0xbbbbbb,
+  static BLADE01_MATERIAL_PARAM = {
+    color: 0xffffff,
+  };
+  static BLADE02_MATERIAL_PARAM = {
+    color: 0xffffff,
+  };
+  static BLADE03_MATERIAL_PARAM = {
     color: 0xffffff,
   };
   static ENGINE_MATERIAL_PARAM = {
-    // color: 0x929292,
     color: 0xdddddd,
   };
   /**
@@ -115,9 +118,9 @@ class ThreeApp {
   axesHelper;       // 軸ヘルパー
   isDown;           // キーの押下状態用フラグ
   // group;            // グループ
-  fanBladeGroup;            // グループ
-  fanLRGroup;            // グループ
-  fanBaseGroup;            // グループ
+  fanBladeGroup;
+  fanLRGroup;
+  fanBaseGroup;
   composer;         // エフェクトコンポーザー
   renderPass;       // レンダーパス
   glitchPass;       // グリッチパス
@@ -173,12 +176,14 @@ class ThreeApp {
 
     // マテリアル
     this.material = new THREE.MeshPhongMaterial(ThreeApp.MATERIAL_PARAM);
-    this.blade_material = new THREE.MeshPhongMaterial(ThreeApp.BLADE_MATERIAL_PARAM);
+    this.blade01_material = new THREE.MeshPhongMaterial(ThreeApp.BLADE01_MATERIAL_PARAM);
+    this.blade02_material = new THREE.MeshPhongMaterial(ThreeApp.BLADE02_MATERIAL_PARAM);
+    this.blade03_material = new THREE.MeshPhongMaterial(ThreeApp.BLADE03_MATERIAL_PARAM);
     this.engine_material = new THREE.MeshPhongMaterial(ThreeApp.ENGINE_MATERIAL_PARAM);
 
     // グループ
-    this.group = new THREE.Group();
-    this.scene.add(this.group);
+    // this.group = new THREE.Group();
+    // this.scene.add(this.group);
     this.fanBladeGroup = new THREE.Group();
     this.scene.add(this.fanBladeGroup);
     this.fanLRGroup = new THREE.Group();
@@ -187,18 +192,15 @@ class ThreeApp {
     this.scene.add(this.fanBaseGroup);
 
     this.fanBlade01Geometry = new THREE.CylinderGeometry(3.0, 3.0, 0.2, 3, 1, false, 0, 1);
-    this.fanBlade01 = new THREE.Mesh(this.fanBlade01Geometry, this.blade_material);
-    // this.fanBlade01.rotation.z = 0.2;
+    this.fanBlade01 = new THREE.Mesh(this.fanBlade01Geometry, this.blade01_material);
     this.fanBladeGroup.add(this.fanBlade01);
 
     this.fanBlade02Geometry = new THREE.CylinderGeometry(3.0, 3.0, 0.2, 3, 1, false, 2.1, 1);
-    this.fanBlade02 = new THREE.Mesh(this.fanBlade02Geometry, this.blade_material);
-    // this.fanBlade02.rotation.z = 0.2;
+    this.fanBlade02 = new THREE.Mesh(this.fanBlade02Geometry, this.blade02_material);
     this.fanBladeGroup.add(this.fanBlade02);
 
     this.fanBlade03Geometry = new THREE.CylinderGeometry(3.0, 3.0, 0.2, 3, 1, false, 4.2, 1);
-    this.fanBlade03 = new THREE.Mesh(this.fanBlade03Geometry, this.blade_material);
-    // this.fanBlade03.rotation.z = 0.2;
+    this.fanBlade03 = new THREE.Mesh(this.fanBlade03Geometry, this.blade03_material);
     this.fanBladeGroup.add(this.fanBlade03);
 
     this.fanEngine02Geometry = new THREE.CylinderGeometry(0.6, 0.6, 0.5);
@@ -309,10 +311,13 @@ class ThreeApp {
    */
   load() {
     return new Promise((resolve) => {
-      const imagePath = './sample.jpg';
+      const imagePath = './sample02.jpg';
       const loader = new THREE.TextureLoader();
       loader.load(imagePath, (texture) => {
         // this.material.map = texture;
+        this.blade01_material.map = texture;
+        this.blade02_material.map = texture;
+        this.blade03_material.map = texture;
         resolve();
       });
     });
