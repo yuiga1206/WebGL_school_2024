@@ -37,7 +37,7 @@ class ThreeApp {
     aspect: window.innerWidth / window.innerHeight,
     near: 0.1,
     far: 100.0,
-    position: new THREE.Vector3(0.0, 2.0, 50.0),
+    position: new THREE.Vector3(10.0, 20.0, 50.0),
     lookAt: new THREE.Vector3(0.0, 0.0, 0.0),
   };
   /**
@@ -67,10 +67,16 @@ class ThreeApp {
    * マテリアル定義のための定数
    */
   static MATERIAL_PARAM = {
-    color: 0x666666,
+    color: 0xbbbbbb,
   };
   static BLADE_MATERIAL_PARAM = {
-    color: 0x666666,
+    // color: 0x929292,
+    // color: 0xbbbbbb,
+    color: 0xffffff,
+  };
+  static ENGINE_MATERIAL_PARAM = {
+    // color: 0x929292,
+    color: 0xdddddd,
   };
   /**
    * フォグの定義のための定数
@@ -168,6 +174,7 @@ class ThreeApp {
     // マテリアル
     this.material = new THREE.MeshPhongMaterial(ThreeApp.MATERIAL_PARAM);
     this.blade_material = new THREE.MeshPhongMaterial(ThreeApp.BLADE_MATERIAL_PARAM);
+    this.engine_material = new THREE.MeshPhongMaterial(ThreeApp.ENGINE_MATERIAL_PARAM);
 
     // グループ
     this.group = new THREE.Group();
@@ -195,12 +202,12 @@ class ThreeApp {
     this.fanBladeGroup.add(this.fanBlade03);
 
     this.fanEngine02Geometry = new THREE.CylinderGeometry(0.6, 0.6, 0.5);
-    this.fanEngine02 = new THREE.Mesh(this.fanEngine02Geometry, this.material);
+    this.fanEngine02 = new THREE.Mesh(this.fanEngine02Geometry, this.engine_material);
     this.fanBladeGroup.add(this.fanEngine02);
     this.fanBladeGroup.position.set(0.0, 1.75, 0);
     
     this.fanEngine01Geometry = new THREE.CylinderGeometry(1.0, 1.0, 3.0);
-    this.fanEngine01 = new THREE.Mesh(this.fanEngine01Geometry, this.material);
+    this.fanEngine01 = new THREE.Mesh(this.fanEngine01Geometry, this.engine_material);
     this.fanLRGroup.add(this.fanEngine01);
     this.fanLRGroup.add(this.fanBladeGroup);
     this.fanLRGroup.rotation.x = Math.PI/2;// 90度回転
