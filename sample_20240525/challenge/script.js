@@ -13,6 +13,7 @@ import { OrbitControls } from '../lib/OrbitControls.js';
 import { EffectComposer } from '../lib/EffectComposer.js';
 import { RenderPass } from '../lib/RenderPass.js';
 import { GlitchPass } from '../lib/GlitchPass.js';
+import { RenderPixelatedPass } from '../lib/RenderPixelatedPass.js';
 // ポストプロセス用のファイルを追加 @@@
 import { DotScreenPass } from '../lib/DotScreenPass.js';
 
@@ -122,8 +123,9 @@ class ThreeApp {
   fanLRGroup;
   fanBaseGroup;
   composer;         // エフェクトコンポーザー
-  renderPass;       // レンダーパス
-  glitchPass;       // グリッチパス
+  // renderPass;       // レンダーパス
+  // glitchPass;       // グリッチパス
+  renderPixelatedPass;       // グリッチパス
   dotScreenPass;    // ドットスクリーンパス @@@
 
   /**
@@ -269,15 +271,19 @@ class ThreeApp {
     this.renderPass = new RenderPass(this.scene, this.camera);
     this.composer.addPass(this.renderPass);
     // 3. コンポーザーに第２のパスとして「グリッチパス」を設定する
-    this.glitchPass = new GlitchPass();
+    // this.glitchPass = new GlitchPass();
     // this.composer.addPass(this.glitchPass);
     // 4. コンポーザーに第３のパスとして「ドットスクリーンパス」を設定する
       // ★★ ドットスクリーンパス：白黒で新聞紙みたいなドットになる。
-    this.dotScreenPass = new DotScreenPass();
+    // this.dotScreenPass = new DotScreenPass();
     // this.composer.addPass(this.dotScreenPass);
-      // ★★ ドットスクリーンパスの後にグリッチパスを addPass すると、グリッチは白黒にならない。
+    // ★★ ドットスクリーンパスの後にグリッチパスを addPass すると、グリッチは白黒にならない。
     // 5. パスの追加がすべて終わったら画面に描画結果を出すよう指示する
-    this.dotScreenPass.renderToScreen = true;
+    // this.dotScreenPass.renderToScreen = true;
+    // ピクセレートパス
+    this.renderPixelatedPass = new RenderPixelatedPass(3, this.scene, this.camera);
+    this.composer.addPass(this.renderPixelatedPass);
+    this.renderPixelatedPass.renderToScreen = true;
 
     // this のバインド
     this.render = this.render.bind(this);
@@ -335,7 +341,9 @@ class ThreeApp {
 
     // フラグに応じてオブジェクトの状態を変化させる
     if (this.isDown === true) {
-      // this.group.rotation.y += 0.05;
+
+      // ピクセレートパスを解除する。
+      this.composer.removePass(this.renderPixelatedPass);
 
       // 羽の回転
       this.fanBladeGroup.rotation.y += 0.4;
