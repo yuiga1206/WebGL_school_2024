@@ -12,15 +12,18 @@ import * as THREE from '../lib/three.module.js';
 import { OrbitControls } from '../lib/OrbitControls.js';
 import { EffectComposer } from '../lib/EffectComposer.js';
 import { RenderPass } from '../lib/RenderPass.js';
-import { GlitchPass } from '../lib/GlitchPass.js';
-import { RenderPixelatedPass } from '../lib/RenderPixelatedPass.js';
+// import { GlitchPass } from '../lib/GlitchPass.js';
 // ポストプロセス用のファイルを追加 @@@
-import { DotScreenPass } from '../lib/DotScreenPass.js';
+import { RenderPixelatedPass } from '../lib/RenderPixelatedPass.js';
+// import { DotScreenPass } from '../lib/DotScreenPass.js';
 
 window.addEventListener('DOMContentLoaded', async () => {
   const wrapper = document.querySelector('#webgl');
   const app = new ThreeApp(wrapper);
-  await app.load();
+  await app.load01();
+  await app.load02();
+  await app.load03();
+  await app.load04();
   app.render();
 }, false);
 
@@ -46,6 +49,7 @@ class ThreeApp {
    */
   static RENDERER_PARAM = {
     clearColor: 0xffffff,
+    // clearColor: 0xcccccc,
     width: window.innerWidth,
     height: window.innerHeight,
   };
@@ -82,6 +86,14 @@ class ThreeApp {
   static ENGINE_MATERIAL_PARAM = {
     color: 0xdddddd,
   };
+  static FLOOR_MATERIAL_PARAM = {
+    color: 0xffffff,
+    side: THREE.DoubleSide,
+  };
+  static WALL_MATERIAL_PARAM = {
+    color: 0xffffff,
+    side: THREE.DoubleSide,
+  };
   /**
    * フォグの定義のための定数
    */
@@ -97,6 +109,13 @@ class ThreeApp {
   directionalLight; // 平行光源（ディレクショナルライト）
   ambientLight;     // 環境光（アンビエントライト）
   material;         // マテリアル
+  blade01_material;
+  blade02_material;
+  blade03_material;
+  engine_material;
+  floor_material;
+  wall01_material;
+  wall02_material;
   // torusGeometry;    // トーラスジオメトリ
   // torusArray;       // トーラスメッシュの配列
   fanBlade01Geometry;
@@ -113,6 +132,12 @@ class ThreeApp {
   fanPillar;
   fanBaseGeometry;
   fanBase;
+  floorGeometry;
+  floor;
+  wall01Geometry;
+  wall01;
+  wall02Geometry;
+  wall02;
   // planeGeometry;    // プレーンジオメトリ
   // planeArray;       // プレーンメッシュの配列
   controls;         // オービットコントロール
@@ -182,6 +207,9 @@ class ThreeApp {
     this.blade02_material = new THREE.MeshPhongMaterial(ThreeApp.BLADE02_MATERIAL_PARAM);
     this.blade03_material = new THREE.MeshPhongMaterial(ThreeApp.BLADE03_MATERIAL_PARAM);
     this.engine_material = new THREE.MeshPhongMaterial(ThreeApp.ENGINE_MATERIAL_PARAM);
+    this.floor_material = new THREE.MeshPhongMaterial(ThreeApp.FLOOR_MATERIAL_PARAM);
+    this.wall01_material = new THREE.MeshPhongMaterial(ThreeApp.WALL_MATERIAL_PARAM);
+    this.wall02_material = new THREE.MeshPhongMaterial(ThreeApp.WALL_MATERIAL_PARAM);
 
     // グループ
     // this.group = new THREE.Group();
@@ -193,6 +221,7 @@ class ThreeApp {
     this.fanBaseGroup = new THREE.Group();
     this.scene.add(this.fanBaseGroup);
 
+    // 扇風機
     this.fanBlade01Geometry = new THREE.CylinderGeometry(3.0, 3.0, 0.2, 3, 1, false, 0, 1);
     this.fanBlade01 = new THREE.Mesh(this.fanBlade01Geometry, this.blade01_material);
     this.fanBladeGroup.add(this.fanBlade01);
@@ -227,34 +256,30 @@ class ThreeApp {
     this.fanBaseGroup.add(this.fanBase);
     this.fanBase.position.set(0.0, 0.25, 0.0);
 
-    // トーラスメッシュ
-    // const torusCount = 10;
-    const transformScale = 5.0;
-    // this.torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 8, 16);
-    // this.torusArray = [];
-    // for (let i = 0; i < torusCount; ++i) {
-    //   const torus = new THREE.Mesh(this.torusGeometry, this.material);
-    //   torus.position.x = (Math.random() * 2.0 - 1.0) * transformScale;
-    //   torus.position.y = (Math.random() * 2.0 - 1.0) * transformScale;
-    //   torus.position.z = (Math.random() * 2.0 - 1.0) * transformScale;
-    //   this.group.add(torus);
-    //   this.torusArray.push(torus);
-    // }
+    // 床
+    this.floorGeometry = new THREE.PlaneGeometry(50, 50);
+    this.floor = new THREE.Mesh(this.floorGeometry, this.floor_material);
+    this.scene.add(this.floor);
+    this.floor.rotation.x = Math.PI/2*-1;// -90度回転
+    this.floor.position.set(0.0, 0, 10.0);
 
-    // プレーンメッシュ
-    // const planeCount = 10;
-    // this.planeGeometry = new THREE.PlaneGeometry(1.0, 1.0);
-    // this.planeArray = [];
-    // for (let i = 0; i < planeCount; ++i) {
-    //   // プレーンメッシュのインスタンスを生成
-    //   // ※マテリアルはトーラスと共通のものを使う
-    //   const plane = new THREE.Mesh(this.planeGeometry, this.material);
-    //   // 座標をランダムに散らす
-    //   plane.position.x = (Math.random() * 2.0 - 1.0) * transformScale;
-    //   plane.position.y = (Math.random() * 2.0 - 1.0) * transformScale;
-    //   plane.position.z = (Math.random() * 2.0 - 1.0) * transformScale;
-    //   this.group.add(plane);
-    // }
+    // 壁 後ろ
+    this.wall01Geometry = new THREE.PlaneGeometry(50, 30);
+    this.wall01 = new THREE.Mesh(this.wall01Geometry, this.wall01_material);
+    this.scene.add(this.wall01);
+    this.wall01.position.set(0.0, 15.0, -15.0);
+
+    // 壁 左
+    this.wall02Geometry = new THREE.PlaneGeometry(50, 30);
+    this.wall02 = new THREE.Mesh(this.wall02Geometry, this.wall02_material);
+    this.scene.add(this.wall02);
+    this.wall02.rotation.y = Math.PI/2;// 90度回転
+    this.wall02.position.set(-25.0, 15.0, 10.0);
+
+
+
+
+
 
     // 軸ヘルパー
     const axesBarLength = 20.0;
@@ -270,19 +295,10 @@ class ThreeApp {
     // 2. コンポーザーに、まず最初に「レンダーパス」を設定する
     this.renderPass = new RenderPass(this.scene, this.camera);
     this.composer.addPass(this.renderPass);
-    // 3. コンポーザーに第２のパスとして「グリッチパス」を設定する
-    // this.glitchPass = new GlitchPass();
-    // this.composer.addPass(this.glitchPass);
-    // 4. コンポーザーに第３のパスとして「ドットスクリーンパス」を設定する
-      // ★★ ドットスクリーンパス：白黒で新聞紙みたいなドットになる。
-    // this.dotScreenPass = new DotScreenPass();
-    // this.composer.addPass(this.dotScreenPass);
-    // ★★ ドットスクリーンパスの後にグリッチパスを addPass すると、グリッチは白黒にならない。
-    // 5. パスの追加がすべて終わったら画面に描画結果を出すよう指示する
-    // this.dotScreenPass.renderToScreen = true;
-    // ピクセレートパス
-    this.renderPixelatedPass = new RenderPixelatedPass(3, this.scene, this.camera);
+    // ピクセレートパス（第一引数はピクセルの粒度）
+    this.renderPixelatedPass = new RenderPixelatedPass(10, this.scene, this.camera);
     this.composer.addPass(this.renderPixelatedPass);
+    // 5. パスの追加がすべて終わったら画面に描画結果を出すよう指示する
     this.renderPixelatedPass.renderToScreen = true;
 
     // this のバインド
@@ -315,7 +331,7 @@ class ThreeApp {
   /**
    * アセット（素材）のロードを行う Promise
    */
-  load() {
+  load01() {
     return new Promise((resolve) => {
       const imagePath = './sample02.jpg';
       const loader = new THREE.TextureLoader();
@@ -328,6 +344,40 @@ class ThreeApp {
       });
     });
   }
+  // 床用のテクスチャ
+  load02() {
+    return new Promise((resolve) => {
+      const imagePath = './sample03.jpg';
+      const loader = new THREE.TextureLoader();
+      loader.load(imagePath, (texture) => {
+        this.floor_material.map = texture;
+        resolve();
+      });
+    });
+  }
+  // 壁:後ろ用のテクスチャ
+  load03() {
+    return new Promise((resolve) => {
+      const imagePath = './sample04.jpg';
+      const loader = new THREE.TextureLoader();
+      loader.load(imagePath, (texture) => {
+        this.wall01_material.map = texture;
+        resolve();
+      });
+    });
+  }
+  // 壁：左用のテクスチャ
+  load04() {
+    return new Promise((resolve) => {
+      const imagePath = './sample05.jpg';
+      const loader = new THREE.TextureLoader();
+      loader.load(imagePath, (texture) => {
+        this.wall02_material.map = texture;
+        resolve();
+      });
+    });
+  }
+
 
   /**
    * 描画処理
