@@ -24,21 +24,16 @@
         align-items: center;
       }
 
-      input[type='checkbox'] {
-        position: absolute;
-        width: 0;
-        height: 0;
-      }
       .base {
         width: 56px;
         border-radius: 16px;
         height: 32px;
         background-color: #ddd;
       }
-      .title {
+      #title {
         margin-left: 4px;
       }
-      input:checked ~ .base {
+      .active .base {
         background-color: rgb(219, 234, 254);
         transition: 0.5s;
       }
@@ -55,7 +50,7 @@
       .switch {
         position: relative;
       }
-      input:checked ~ .circle {
+      .active .circle {
         transform: translateX(100%);
         background-color: blue;
       }
@@ -75,14 +70,13 @@
       <div>
         <p class="text">スペースキー押下で扇風機回転スタート<br>↓<br>フォグ減少</p>
         <p>ピクセレートパス on/off</p>
-        <label for="switch" class="switch_label">
-          <div class="switch">
-            <input type="checkbox" id="switch" />
+        <div class="switch_label">
+          <div class="switch" id="switch">
             <div class="circle"></div>
             <div class="base"></div>
           </div>
-          <span class="title">OFF</span>
-        </label>
+          <span id="title">OFF</span>
+        </div>
       </div>
     </div>
   </body>

@@ -311,16 +311,19 @@ class ThreeApp {
     // ピクセレートパス関係
     this.isCheck = false;
     const checkbox = document.getElementById('switch');
+    const title = document.getElementById('title');
     checkbox.addEventListener('click', () => {
-      const title = document.querySelector('.title');
-      title.textContent = checkbox.checked ? 'ON' : 'OFF';
-      // checkboxでピクセレートパスをコントロール。
+      // ボタンでピクセレートパスをコントロール。
       if(this.isCheck === false) {
+        checkbox.classList.add("active");
         this.composer.addPass(this.renderPixelatedPass);
         this.isCheck = true;
+        title.textContent = 'ON';
       } else {
+        checkbox.classList.remove("active");
         this.composer.removePass(this.renderPixelatedPass);
         this.isCheck = false;
+        title.textContent = 'OFF';
       }
     });
 
