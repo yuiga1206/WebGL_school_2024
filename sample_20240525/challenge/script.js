@@ -160,11 +160,11 @@ class ThreeApp {
     this.scene = new THREE.Scene();
 
     // フォグ
-    // this.scene.fog = new THREE.Fog(
-    //   ThreeApp.FOG_PARAM.color,
-    //   ThreeApp.FOG_PARAM.near,
-    //   ThreeApp.FOG_PARAM.far
-    // );
+    this.scene.fog = new THREE.Fog(
+      ThreeApp.FOG_PARAM.color,
+      ThreeApp.FOG_PARAM.near,
+      ThreeApp.FOG_PARAM.far
+    );
 
     // カメラ
     this.camera = new THREE.PerspectiveCamera(
@@ -415,7 +415,7 @@ class ThreeApp {
         this.fanLRGroup.rotation.z -= 0.02;
       }
 
-      // this.scene.fog.far += 0.5;
+      this.scene.fog.far += 0.5;
       // console.log(this.scene.fog.far);
     }
 
