@@ -12,10 +12,8 @@ import * as THREE from '../lib/three.module.js';
 import { OrbitControls } from '../lib/OrbitControls.js';
 import { EffectComposer } from '../lib/EffectComposer.js';
 import { RenderPass } from '../lib/RenderPass.js';
-// import { GlitchPass } from '../lib/GlitchPass.js';
 // ポストプロセス用のファイルを追加 @@@
 import { RenderPixelatedPass } from '../lib/RenderPixelatedPass.js';
-// import { DotScreenPass } from '../lib/DotScreenPass.js';
 
 window.addEventListener('DOMContentLoaded', async () => {
   const wrapper = document.querySelector('#webgl');
@@ -116,8 +114,6 @@ class ThreeApp {
   floor_material;
   wall01_material;
   wall02_material;
-  // torusGeometry;    // トーラスジオメトリ
-  // torusArray;       // トーラスメッシュの配列
   fanBlade01Geometry;
   fanBlade02Geometry;
   fanBlade03Geometry;
@@ -138,20 +134,14 @@ class ThreeApp {
   wall01;
   wall02Geometry;
   wall02;
-  // planeGeometry;    // プレーンジオメトリ
-  // planeArray;       // プレーンメッシュの配列
   controls;         // オービットコントロール
   axesHelper;       // 軸ヘルパー
   isDown;           // キーの押下状態用フラグ
-  // group;            // グループ
-  fanBladeGroup;
+  fanBladeGroup;    // グループ
   fanLRGroup;
   fanBaseGroup;
   composer;         // エフェクトコンポーザー
-  // renderPass;       // レンダーパス
-  // glitchPass;       // グリッチパス
-  renderPixelatedPass;       // グリッチパス
-  dotScreenPass;    // ドットスクリーンパス @@@
+  renderPixelatedPass;       // ピクセレートパス
 
   /**
    * コンストラクタ
@@ -212,8 +202,6 @@ class ThreeApp {
     this.wall02_material = new THREE.MeshPhongMaterial(ThreeApp.WALL_MATERIAL_PARAM);
 
     // グループ
-    // this.group = new THREE.Group();
-    // this.scene.add(this.group);
     this.fanBladeGroup = new THREE.Group();
     this.scene.add(this.fanBladeGroup);
     this.fanLRGroup = new THREE.Group();
@@ -297,9 +285,9 @@ class ThreeApp {
     this.composer.addPass(this.renderPass);
     // ピクセレートパス（第一引数はピクセルの粒度）
     this.renderPixelatedPass = new RenderPixelatedPass(10, this.scene, this.camera);
-    this.composer.addPass(this.renderPixelatedPass);
+    // this.composer.addPass(this.renderPixelatedPass);
     // 5. パスの追加がすべて終わったら画面に描画結果を出すよう指示する
-    this.renderPixelatedPass.renderToScreen = true;
+    // this.renderPixelatedPass.renderToScreen = true;
 
     // this のバインド
     this.render = this.render.bind(this);
@@ -319,6 +307,22 @@ class ThreeApp {
     window.addEventListener('keyup', (keyEvent) => {
       this.isDown = false;
     }, false);
+
+    // ピクセレートパス関係
+    this.isCheck = false;
+    const checkbox = document.getElementById('switch');
+    checkbox.addEventListener('click', () => {
+      const title = document.querySelector('.title');
+      title.textContent = checkbox.checked ? 'ON' : 'OFF';
+      // checkboxでピクセレートパスをコントロール。
+      if(this.isCheck === false) {
+        this.composer.addPass(this.renderPixelatedPass);
+        this.isCheck = true;
+      } else {
+        this.composer.removePass(this.renderPixelatedPass);
+        this.isCheck = false;
+      }
+    });
 
     // ウィンドウのリサイズを検出できるようにする
     window.addEventListener('resize', () => {
@@ -393,7 +397,8 @@ class ThreeApp {
     if (this.isDown === true) {
 
       // ピクセレートパスを解除する。
-      this.composer.removePass(this.renderPixelatedPass);
+      // this.composer.removePass(this.renderPixelatedPass);
+      // // this.composer.addPass(this.renderPixelatedPass);
 
       // 羽の回転
       this.fanBladeGroup.rotation.y += 0.4;

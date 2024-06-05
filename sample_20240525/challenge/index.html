@@ -8,10 +8,83 @@
       html, body {
         overflow: hidden;
       }
+      #btn {
+        width: 260px;
+        /* height: 30px; */
+        background-color: #fff;
+        padding: 10px;
+        border: 1px solid #000;
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+      }
+      .switch_label {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      input[type='checkbox'] {
+        position: absolute;
+        width: 0;
+        height: 0;
+      }
+      .base {
+        width: 56px;
+        border-radius: 16px;
+        height: 32px;
+        background-color: #ddd;
+      }
+      .title {
+        margin-left: 4px;
+      }
+      input:checked ~ .base {
+        background-color: rgb(219, 234, 254);
+        transition: 0.5s;
+      }
+      .circle {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        background-color: white;
+        transition: 0.5s;
+      }
+      .switch {
+        position: relative;
+      }
+      input:checked ~ .circle {
+        transform: translateX(100%);
+        background-color: blue;
+      }
+      p {
+        font-size: 14px;
+      }
+      .text {
+        padding-bottom: 10px;
+        border-bottom: 1px solid #000;
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body>
     <div id="webgl"></div>
+    <div id="btn">
+      <div>
+        <p class="text">スペースキー押下で扇風機回転スタート<br>↓<br>フォグ減少</p>
+        <p>ピクセレートパス on/off</p>
+        <label for="switch" class="switch_label">
+          <div class="switch">
+            <input type="checkbox" id="switch" />
+            <div class="circle"></div>
+            <div class="base"></div>
+          </div>
+          <span class="title">OFF</span>
+        </label>
+      </div>
+    </div>
   </body>
 </html>
 
