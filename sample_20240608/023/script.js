@@ -307,11 +307,13 @@ class ThreeApp {
     this.satellite.position.add(direction.multiplyScalar(ThreeApp.SATELLITE_SPEED));
 
     // (C) 変換前と変換後の２つのベクトルから外積で法線ベクトルを求める @@@
+    // ★★ 回転軸を求めるために、外積で直行するベクトルを出す。
     const normalAxis = new THREE.Vector3().crossVectors(previousDirection, this.satelliteDirection);
-    normalAxis.normalize();
+    normalAxis.normalize(); // ★★ 回転軸として使う。
     // (D) 変換前と変換後のふたつのベクトルから内積でコサインを取り出す
+    // ★★ 単位化されたベクトル同士の内積は、コサイン(θ)に等しい
     const cos = previousDirection.dot(this.satelliteDirection);
-    // (D) コサインをラジアンに戻す
+    // (D) （アークコサインを使用して）コサインをラジアンに戻す
     const radians = Math.acos(cos);
     // 求めた法線ベクトルとラジアンからクォータニオンを定義
     const qtn = new THREE.Quaternion().setFromAxisAngle(normalAxis, radians);
