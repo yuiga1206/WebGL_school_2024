@@ -12,6 +12,7 @@ import { OrbitControls } from '../lib/OrbitControls.js';
 window.addEventListener('DOMContentLoaded', async () => {
   const wrapper = document.querySelector('#webgl');
   const app = new ThreeApp(wrapper);
+  // ★★ 順番を変えると失敗する。ロードが終わっている前提で初期化処理が走るため。
   await app.load();
   // 初期化処理をコンストラクタから分離 @@@
   app.init();
@@ -135,6 +136,9 @@ class ThreeApp {
       const earthPath = './earth.jpg';
       const moonPath = './moon.jpg';
       const loader = new THREE.TextureLoader();
+      // ★★ コールバックの中にコールバックがある。
+      // ★★ ネストが嫌なら↓のように書く。
+      // ★★ await loader.loadAsync()
       loader.load(earthPath, (earthTexture) => {
         // 地球用
         this.earthTexture = earthTexture;
