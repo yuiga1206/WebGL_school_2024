@@ -134,10 +134,13 @@ class ThreeApp {
       const scaleX = pointerX / window.innerWidth * 2.0 - 1.0;
       const scaleY = pointerY / window.innerHeight * 2.0 - 1.0;
       // ベクトルを単位化する @@@
+      // ★★ Vector2　：いくつの数値を持つベクトル、というクラスがある。
+      // ★★ Vector2, Vector3, Vector4
       const vector = new THREE.Vector2(
         scaleX,
         scaleY,
       );
+      // ★★ ノーマライズ（単位化）　＝　長さが1になる
       vector.normalize();
       // スケールを揃えた値を月の座標に割り当てる
       this.moon.position.set(
