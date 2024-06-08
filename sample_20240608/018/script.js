@@ -258,11 +258,20 @@ class ThreeApp {
     // 前回のフレームからの経過時間の取得 @@@
     const time = this.clock.getElapsedTime();
     // 経過時間をそのままラジアンとしてサインとコサインを求める
-    const sin = Math.sin(time);
-    const cos = Math.cos(time);
+    const sin = Math.sin(time); // 半径1の円の、該当するラジアンに相当する高さ
+    const cos = Math.cos(time); // ヨコ移動量
+    // ★★ const sin = Math.sin(time * 0.2);
+    // ★★ const cos = Math.cos(time * 0.2);
+    // ★★ ↑とかにすれば、進む速度を変更できる。
+
+    // ★★ const sin = Math.sin(-time);
+    // ★★ const cos = Math.cos(-time);
+    // ★★ ↑だと逆に回転する。
+
+
     // 月の座標を（XZ 平面に水平に）動かす
     this.moon.position.set(
-      cos * ThreeApp.MOON_DISTANCE,
+      cos * ThreeApp.MOON_DISTANCE, // sin/cosが半径1の円からの小さい数字なので、定数をかける。
       0.0,
       sin * ThreeApp.MOON_DISTANCE,
     );
