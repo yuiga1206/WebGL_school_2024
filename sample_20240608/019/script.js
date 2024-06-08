@@ -129,6 +129,13 @@ class ThreeApp {
       const pointerY = pointerEvent.clientY;
       // 3D のワールド空間に合わせてスケールを揃える
       const scaleX = pointerX / window.innerWidth * 2.0 - 1.0;
+      // ★★ pointerX / window.innerWidth　：全体の幅で割って、0.0~1.0の範囲の結果を得られる。
+      // ★★ その結果を2倍して　：0.0~2.0の範囲
+      // ★★ さらに1を引くと　：-1.0~1.0の範囲になる。
+      // ★★ つまり、原点が0,0の位置になる。
+      // ★★ スクリーン空間のピクセル単位だった座標が…
+      // ★★ 原点がスクリーンの中心にあり、-1 ~ 1 の範囲の座標に変換された状態
+
       const scaleY = pointerY / window.innerHeight * 2.0 - 1.0;
       // スケールを揃えた値を月の座標に割り当てる
       this.moon.position.set(
