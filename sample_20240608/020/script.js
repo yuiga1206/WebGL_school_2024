@@ -136,11 +136,12 @@ class ThreeApp {
       // ベクトルを単位化する @@@
       // ★★ Vector2　：いくつの数値を持つベクトル、というクラスがある。
       // ★★ Vector2, Vector3, Vector4
+      // ★★ カーソルの座標を、Vector2 クラスに設定
       const vector = new THREE.Vector2(
         scaleX,
         scaleY,
       );
-      // ★★ ノーマライズ（単位化）　＝　長さが1になる
+      // ★★ カーソルの位置に伸びるベクトルであるとみなして、ノーマライズ（単位化）　＝　長さが1になる
       vector.normalize();
       // スケールを揃えた値を月の座標に割り当てる
       this.moon.position.set(

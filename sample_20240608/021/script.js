@@ -36,6 +36,7 @@ class ThreeApp {
    * 人工衛星の移動速度 @@@
    */
   static SATELLITE_SPEED = 0.05;
+  // static SATELLITE_SPEED = 0.2;
   /**
    * カメラ定義のための定数
    */
@@ -282,10 +283,18 @@ class ThreeApp {
 
     // 人工衛星は月を自動追尾する @@@
     // (終点 - 始点) という計算を行うことで、２点間を結ぶベクトルを定義
+    // ★★ new Vector3().normalize　：一回インスタンスを作る
+    // ★★ subVectors()　：ベクトル同士の引き算（月 - 衛星）
     const subVector = new THREE.Vector3().subVectors(this.moon.position, this.satellite.position);
+    // ★★ ↓こういうやり方も出来る。cloneしないと元のデータが書き換わるので、事故りやすいかも…。
+    // ★★ sub が引き算。add, multiply, divide：足し算・掛け算・割り算。
+    // ★★ subVectors = this.moon.position.clone().sub(this.satellite.position);
+
     // 長さに依存せず、向きだけを考えたい場合はベクトルを単位化する
     subVector.normalize();
     // 現在の人工衛星の座標に、向きベクトルを小さくスケールして加算する
+    // ★★ 長さ1のベクトルだと大きすぎるため。
+    // ★★ multiplyScalar　：掛け算する
     this.satellite.position.add(subVector.multiplyScalar(ThreeApp.SATELLITE_SPEED));
 
     // レンダラーで描画
