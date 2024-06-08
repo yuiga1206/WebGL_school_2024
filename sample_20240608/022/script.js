@@ -294,9 +294,16 @@ class ThreeApp {
     // 長さに依存せず、向きだけを考えたい場合はベクトルを単位化する
     subVector.normalize();
     // 人工衛星の進行方向ベクトルに、向きベクトルを小さくスケールして加算する @@@
-    this.satelliteDirection.add(subVector.multiplyScalar(ThreeApp.SATELLITE_TURN_SCALE));
+    // ★★ 
+    subVector.multiplyScalar(ThreeApp.SATELLITE_TURN_SCALE);
+    this.satelliteDirection.add(subVector);
+    // ↓元のコード
+    // this.satelliteDirection.add(subVector.multiplyScalar(ThreeApp.SATELLITE_TURN_SCALE));
+
     // 加算したことでベクトルの長さが変化するので、単位化してから人工衛星の座標に加算する
     this.satelliteDirection.normalize();
+
+    // ★★ 長さ1だと大きすぎるので、数値を掛ける。
     const direction = this.satelliteDirection.clone();
     this.satellite.position.add(direction.multiplyScalar(ThreeApp.SATELLITE_SPEED));
 
