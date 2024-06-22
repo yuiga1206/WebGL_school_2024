@@ -112,14 +112,22 @@ class ThreeApp {
     // マウスのクリックイベントの定義 @@@
     window.addEventListener('click', (mouseEvent) => {
       // スクリーン空間の座標系をレイキャスター用に正規化する（-1.0 ~ 1.0 の範囲）
+      // ★★ 画面の中心を原点として、端から端までを-1.0 ~ 1.0とするため。
       const x = mouseEvent.clientX / window.innerWidth * 2.0 - 1.0;
+      // ★★ 【mouseEvent.clientX / window.innerWidth】で0 ~ 1の範囲
+      // ★★ それを2倍して1引くので、-1.0 ~ 1.0 の範囲
       const y = mouseEvent.clientY / window.innerHeight * 2.0 - 1.0;
       // スクリーン空間は上下が反転している点に注意（Y だけ符号を反転させる）
+      // ★★ 下方向がプラスになっているので、Y軸だけ反転させ、上方向をプラスにする。
       const v = new THREE.Vector2(x, -y);
       // レイキャスターに正規化済みマウス座標とカメラを指定する
       this.raycaster.setFromCamera(v, this.camera);
+      // ★★ ↑　計算に必要な要素を渡しただけで、計算自体はまだ行われていない
       // scene に含まれるすべてのオブジェクト（ここでは Mesh）を対象にレイキャストする
+      // ★★ 【this.raycaster.intersectObject】
+      // ★★ 【this.raycaster.intersectObjects】の場合は配列を渡す。
       const intersects = this.raycaster.intersectObjects(this.torusArray);
+      // ★★ intersects の中に交差したオブジェクトの情報が入っていく。
       // レイが交差しなかった場合を考慮し一度マテリアルを通常時の状態にリセットしておく
       this.torusArray.forEach((mesh) => {
         mesh.material = this.material;
@@ -237,6 +245,7 @@ class ThreeApp {
       torus.position.x = (Math.random() * 2.0 - 1.0) * transformScale;
       torus.position.y = (Math.random() * 2.0 - 1.0) * transformScale;
       torus.position.z = (Math.random() * 2.0 - 1.0) * transformScale;
+      // ★★ this.name = `t-$(i)`; //で名前をつける
       this.group.add(torus);
       this.torusArray.push(torus);
     }
