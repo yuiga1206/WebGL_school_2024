@@ -162,6 +162,8 @@ class ThreeApp {
     // ※その他、glTF にはカメラやアニメーションの情報を含ませることもできます
     // ------------------------------------------------------------------------
     // シーンに glTF を追加 @@@
+    // ★★ gltf.scene <- Object3D
+    // ★★ gltfのsceneプロパティがObject3Dに変換されているので、sceneにadd出来る。
     this.scene.add(this.gltf.scene);
 
     // 軸ヘルパー
@@ -179,6 +181,8 @@ class ThreeApp {
   load() {
     return new Promise((resolve) => {
       // 読み込むファイルのパス @@@
+      // ★★ glTF 1.0 ：glTF のファイルは2つでワンセットだった。*.gltf + *.bin
+      // ★★ glTF 2.0 ：*.glb（バイナリの中にjsonを埋め込んだもの）
       const gltfPath = './Duck.glb';
       const loader = new GLTFLoader();
       loader.load(gltfPath, (gltf) => {
