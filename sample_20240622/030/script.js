@@ -49,6 +49,7 @@ class ThreeApp {
     color: 0xffffff,
     intensity: 1.0,
     // 影を使う場合は、ディレクショナルライトであっても位置が重要になる @@@
+    // ★★ ライトが全体を包み込める位置にあるか？
     position: new THREE.Vector3(50.0, 50.0, 50.0),
     // - 平行光源の position プロパティ ---------------------------------------
     // 一般的な解釈として、平行光源は「無限遠から降り注ぎ、ワールド座標に関係な
@@ -67,9 +68,12 @@ class ThreeApp {
   /**
    * 影に関する定数の定義 @@@
    */
+  // ★★ ライトの設定に使う。
   static SHADOW_PARAM = {
     spaceSize: 100.0, // 影を生成するためのカメラの空間の広さ
-    mapSize: 512,     // 影を生成するためのバッファのサイズ
+    mapSize: 512,     // 影を生成するためのバッファのサイズ // ★★ 影の解像度
+    // ★★ 解像度を上げると、かなり負荷が上がる
+
     // - 影を生成するためのバッファとは ---------------------------------------
     // 影を生成する原理は、ものすごく簡単に言えば「距離を格納したバッファの中身
     // と実際の値を比較して、遮蔽物があるか調べる」ということを行っています。
@@ -145,6 +149,9 @@ class ThreeApp {
 
     // レンダラーに対しては影の描画アルゴリズムを指定できる @@@
     // ※ちなみに既定値は THREE.PCFShadowMap なので、以下は省略可
+    // ★★ 違う値だと、影の感じや、描画負荷が変わってくる。
+    // ★★ 負荷がかなり変わる…！！
+    // ★★ BasichadowMapだと負荷は低いが、ガビガビになる。
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
 
     // シーン
@@ -172,6 +179,7 @@ class ThreeApp {
     this.directionalLight.castShadow = true;
 
     // 影用のカメラ（平行投影のカメラ）は必要に応じて範囲を広げる @@@
+    // ★★ camera -> OrthographicCamera
     this.directionalLight.shadow.camera.top    =  ThreeApp.SHADOW_PARAM.spaceSize;
     this.directionalLight.shadow.camera.bottom = -ThreeApp.SHADOW_PARAM.spaceSize;
     this.directionalLight.shadow.camera.left   = -ThreeApp.SHADOW_PARAM.spaceSize;
@@ -220,7 +228,7 @@ class ThreeApp {
     this.axesHelper = new THREE.AxesHelper(axesBarLength);
     this.scene.add(this.axesHelper);
 
-    // アニメーション時間管理のための Clock オブジェクトを生成しておく @@@
+    // アニメーション時間管理のための Clock オブジェクトを生成しておく
     this.clock = new THREE.Clock();
 
     // コントロール
