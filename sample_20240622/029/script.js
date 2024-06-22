@@ -162,14 +162,19 @@ class ThreeApp {
       loader.load(gltfPath, (gltf) => {
         // glTF のロードが終わったらアニメーション関連の初期化を同時に行う @@@
         this.gltf = gltf;
+
+        // ★★ アニメーションの初期化処理
         // ミキサーを生成する（scene プロパティを渡す点に注意）
         this.mixer = new THREE.AnimationMixer(this.gltf.scene);
-        // アニメーション情報を取り出す
+        // アニメーション情報を取り出す（配列で入っているのでループで順番に処理）
         const animations = this.gltf.animations;
         // 取り出したアニメーション情報を順番にミキサーに通してアクション化する
         this.actions = [];
         for(let i = 0; i < animations.length; ++i){
           // アクションを生成
+          // const action = this.mixer.clipAction(animations[i]);
+          // this.actions.push(action);
+          // ★★ ↑2行にしてもOK
           this.actions.push(this.mixer.clipAction(animations[i]));
           // ループ方式を設定する
           this.actions[i].setLoop(THREE.LoopRepeat);
@@ -180,6 +185,9 @@ class ThreeApp {
 
         // 最初のアクションのウェイトだけ 1.0 にして目に見えるようにしておく
         this.actions[0].weight = 1.0;
+        // ★★ this.actions には3つのアニメーションが入っている。
+        // this.actions[0].weight = 0.5;
+        // this.actions[1].weight = 0.5;
 
         // - アクションのウェイト ---------------------------------------------
         // three.js の AnimationAction では上記のように weight という概念があり
@@ -208,7 +216,9 @@ class ThreeApp {
 
     // 前回からの経過時間（デルタ）を取得してミキサーに適用する @@@
     const delta = this.clock.getDelta();
+    // ★★ delta（前回からの差分）
     this.mixer.update(delta);
+    // ★★ 前回からこれだけ（delta分だけ）進んだんだね、じゃあアニメはこうなってないとダメだよね、と勝手に進めてくれる。
 
     // レンダラーで描画
     this.renderer.render(this.scene, this.camera);
