@@ -47,6 +47,7 @@ class ThreeApp {
     color: 0xffffff,      // パーティクルの色
     size: 0.25,           // 基準となるサイズ
     sizeAttenuation: true // 遠近感を出すかどうかの真偽値
+    // ★★ デフォルトで true
   };
 
   wrapper;          // canvas の親要素
@@ -121,6 +122,7 @@ class ThreeApp {
     const COUNT = 10;    // パーティクルの行と列のカウント数
     const WIDTH = 10.0;  // どの程度の範囲に配置するかの幅
     const vertices = []; // まず頂点情報を格納する単なる配列（Array）
+    // ★★ ここでFloat32Arrayに入れてもいいが、ナマの配列の方がメソッドなどが便利。
     for (let i = 0; i <= COUNT; ++i) {
       // カウンタ変数 i から X 座標を算出
       const x = (i / COUNT - 0.5) * WIDTH;
@@ -142,11 +144,20 @@ class ThreeApp {
     // ※ストライドは three.js のドキュメントなどでは itemSize と記載されている
     // ------------------------------------------------------------------------
     // この頂点情報がいくつの要素からなるか（XYZ なので、３を指定）
-    const stride = 3;
+    const stride = 3;// ★★ 基本は3。
     // BufferAttribute の生成
-    const attribute = new THREE.BufferAttribute(new Float32Array(vertices), stride);
+    const attribute = new THREE.BufferAttribute(new Float32Array(vertices), stride); // ★★ Float32Arrayに入れるので1行にして、2行にしてもOK。
+    // ★★ ThreeApp.js では、position つまり、座標を表すデータはvec3 前提になっている。
+
     // position という名前に対して BufferAttribute を割り当てる
     this.geometry.setAttribute('position', attribute);
+    // ★★ 座標を定義する場合は、属性名は position で固定
+
+    // ★★ WebGL が描画を行うプロセスにおいて、シェーダを使っている。
+    // ★★ シェーダの中で、頂点の attribute （属性）を回ておくセクションがある。
+    // ★★ three.js があらかじめ用意してくれているシェーダのの頂点属性が position になっている
+
+    // ★★ three.js の内部で、あらかじめ座標は position という名前である前提になっている。
     // - attribute の名称 -----------------------------------------------------
     // 今回は、頂点の「座標」を TypedArray に変換して、それをジオメトリに対して
     // セットしています。そこで 'position' という名前を指定していますが、これを
@@ -161,7 +172,7 @@ class ThreeApp {
     // に 'pos' のような名前を指定してもうまくいきませんので注意しましょう。
     // ------------------------------------------------------------------------
 
-    // パーティクルを格納したジオメトリとマテリアルからポイントオブジェクトを生成
+    // パーティクルを格納したジオメトリとマテリアルからポイントオブジェクトを生成 @@@
     // ※ポイントオブジェクトは、頂点１つを「点」として描画するジオメトリの形態です
     this.points = new THREE.Points(this.geometry, this.material);
     // シーンにパーティクルを追加
