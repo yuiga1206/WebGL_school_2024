@@ -18,7 +18,7 @@ import { OrbitControls } from '../lib/OrbitControls.js';
 window.addEventListener('DOMContentLoaded', async () => {
   const wrapper = document.querySelector('#webgl');
   const app = new ThreeApp(wrapper);
-  await app.load();
+  await app.load(); // ★★ 先に非同期処理する。
   app.init();
   app.render();
 }, false);
@@ -121,6 +121,8 @@ class ThreeApp {
     for (let i = 0; i <= COUNT; ++i) {
       // 範囲内にランダムに頂点を配置 @@@
       vertices.push(
+        // ★★ Math.random() 0以上1未満を返す
+        // ★★ 0~1だったものが、-5~5になっている。
         Math.random() * WIDTH - (WIDTH * 0.5),
         Math.random() * WIDTH - (WIDTH * 0.5),
         Math.random() * WIDTH - (WIDTH * 0.5),
