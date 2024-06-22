@@ -139,26 +139,26 @@ class ThreeApp {
     }, false);
 
     // マウスカーソルの動きを検出できるようにする
-    window.addEventListener('pointermove', (pointerEvent) => {
-      // ポインター（マウスカーソル）のクライアント領域上の座標
-      const pointerX = pointerEvent.clientX;
-      const pointerY = pointerEvent.clientY;
-      // 3D のワールド空間に合わせてスケールを揃える
-      const scaleX = pointerX / window.innerWidth * 2.0 - 1.0;
-      const scaleY = pointerY / window.innerHeight * 2.0 - 1.0;
-      // ベクトルを単位化する
-      const vector = new THREE.Vector2(
-        scaleX,
-        scaleY,
-      );
-      vector.normalize();
-      // スケールを揃えた値を月の座標に割り当てる
-      this.moon.position.set(
-        vector.x * ThreeApp.MOON_DISTANCE,
-        0.0,
-        vector.y * ThreeApp.MOON_DISTANCE,
-      );
-    }, false);
+    // window.addEventListener('pointermove', (pointerEvent) => {
+    //   // ポインター（マウスカーソル）のクライアント領域上の座標
+    //   const pointerX = pointerEvent.clientX;
+    //   const pointerY = pointerEvent.clientY;
+    //   // 3D のワールド空間に合わせてスケールを揃える
+    //   const scaleX = pointerX / window.innerWidth * 2.0 - 1.0;
+    //   const scaleY = pointerY / window.innerHeight * 2.0 - 1.0;
+    //   // ベクトルを単位化する
+    //   const vector = new THREE.Vector2(
+    //     scaleX,
+    //     scaleY,
+    //   );
+    //   vector.normalize();
+    //   // スケールを揃えた値を月の座標に割り当てる
+    //   this.moon.position.set(
+    //     vector.x * ThreeApp.MOON_DISTANCE,
+    //     0.0,
+    //     vector.y * ThreeApp.MOON_DISTANCE,
+    //   );
+    // }, false);
 
     // リサイズイベント
     window.addEventListener('resize', () => {
@@ -291,6 +291,30 @@ class ThreeApp {
       this.earth.rotation.y += 0.05;
       this.moon.rotation.y += 0.05;
     }
+
+
+    // 前回のフレームからの経過時間の取得 @@@
+    const time = this.clock.getElapsedTime();
+    // 経過時間をそのままラジアンとしてサインとコサインを求める
+    const sin1 = Math.sin(time * 0.5); // 半径1の円の、該当するラジアンに相当する高さ
+    const cos1 = Math.cos(time * 0.5); // ヨコ移動量
+    // ★★ const sin = Math.sin(time * 0.2);
+    // ★★ const cos = Math.cos(time * 0.2);
+    // ★★ ↑とかにすれば、進む速度を変更できる。
+
+    // ★★ const sin = Math.sin(-time);
+    // ★★ const cos = Math.cos(-time);
+    // ★★ ↑だと逆に回転する。
+
+
+    // 月の座標を（XZ 平面に水平に）動かす
+    this.moon.position.set(
+      cos1 * ThreeApp.MOON_DISTANCE, // sin/cosが半径1の円からの小さい数字なので、定数をかける。
+      0.0,
+      sin1 * ThreeApp.MOON_DISTANCE,
+    );
+
+
 
     // (A) 現在（前のフレームまで）の進行方向を変数に保持しておく @@@
     const previousDirection = this.satelliteDirection.clone();
