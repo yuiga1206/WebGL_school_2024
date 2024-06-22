@@ -52,8 +52,9 @@ class ThreeApp {
     sizeAttenuation: true,            // 遠近感を出すかどうかの真偽値
     opacity: 0.8,                     // 不透明度 @@@
     transparent: true,                // 透明度を有効化するかどうか @@@
-    blending: THREE.AdditiveBlending, // 加算合成モードで色を混ぜる @@@
+    blending: THREE.AdditiveBlending, // 加算合成モードで色を混ぜる @@@ （重なるほど、見た目は明るく）
     depthWrite: false                 // 深度値を書き込むかどうか @@@
+    // ★★ depthTest: false // 深度テストをしない
     // - depthWrite -----------------------------------------------------------
     // いずれネイティブな WebGL のサンプルを触る段階になったら必然的にしっかりと
     // 履修することではあるのですが、ここでは簡単に深度値について説明します。
