@@ -111,6 +111,9 @@ class ThreeApp {
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
+
+      // ★★ ここでオフスクリーン用のリサイズ処理。
+      // ★★ this.renderTarget.setSize(w, h);
     }, false);
   }
 
@@ -126,10 +129,12 @@ class ThreeApp {
     this.wrapper.appendChild(this.renderer.domElement);
 
     // シーン
+    // ★★ 白背景の方
     this.scene = new THREE.Scene();
 
     // オフスクリーン用のシーン @@@
     // 以下、各種オブジェクトやライトはオフスクリーン用のシーンに add しておく
+    // ★★ アヒルの方
     this.offscreenScene = new THREE.Scene();
 
     // カメラ
@@ -175,7 +180,8 @@ class ThreeApp {
     this.offscreenCamera = this.camera.clone();
     // ただし、最終シーンがブラウザのクライアント領域のサイズなのに対し……
     // レンダーターゲットは正方形なので、アスペクト比は 1.0 に設定を上書きしておく
-    this.offscreenCamera.aspect = 1.0;
+    this.offscreenCamera.aspect = 1.0;// ★★ 普段は「widrh / height」
+    // ★★ ↓カメラの設定を変更したときは、行列を更新するために呼ぶ。（お約束的なやつ）
     this.offscreenCamera.updateProjectionMatrix();
 
     // レンダリング結果を可視化するのに、板ポリゴンを使う @@@
@@ -225,7 +231,9 @@ class ThreeApp {
     // Duck には絶えず動いておいてもらう @@@
     this.gltf.scene.rotation.y += 0.01;
 
+    // ★★ アヒルの方
     // まず最初に、オフスクリーンレンダリングを行う @@@
+    // ★★ ここからオフスクリーンレンダリングが始まる
     this.renderer.setRenderTarget(this.renderTarget);
     // オフスクリーンレンダリングは常に固定サイズ
     this.renderer.setSize(ThreeApp.RENDER_TARGET_SIZE, ThreeApp.RENDER_TARGET_SIZE);
@@ -234,8 +242,10 @@ class ThreeApp {
     // オフスクリーン用のシーン（Duck が含まれるほう）を描画する
     this.renderer.render(this.offscreenScene, this.offscreenCamera);
 
+    // ★★ 白背景の方
     // 次に最終的な画面の出力用のシーンをレンダリングするため null を指定しもとに戻す @@@
     this.renderer.setRenderTarget(null);
+    // ★★ ここからcanvasにレンダリングされる
     // 最終的な出力はウィンドウサイズ
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     // わかりやすくするために、背景を白にしておく
