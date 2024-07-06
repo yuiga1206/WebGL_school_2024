@@ -133,6 +133,7 @@ class App {
     WebGLUtility.enableBuffer(gl, vboArray, attributeLocationArray, strideArray);
 
     // uniform location の取得 @@@
+    // ★★ 後々、使いやすいようにjsオブジェクトにしているが、必須では無い。
     this.uniformLocation = {
       time: gl.getUniformLocation(this.program, 'time'),
     };
@@ -184,9 +185,10 @@ class App {
     }
 
     // ビューポートの設定やクリア処理は毎フレーム呼び出す @@@
-    this.setupRendering();
+    this.setupRendering();// ★★ クリアして次の描画……
 
     // 現在までの経過時間を計算し、秒単位に変換する @@@
+    // ★★ Date.now() の戻り値はミリ秒なので、1/1000すると秒単位になる
     const nowTime = (Date.now() - this.startTime) * 0.001;
 
     // プログラムオブジェクトを選択
@@ -221,6 +223,7 @@ class App {
 
     // ロケーションを指定して、uniform 変数の値を更新する（GPU に送る） @@@
     gl.uniform1f(this.uniformLocation.time, nowTime);
+    // ★★ vec2を送りたければ…　→　gl.uniform2fv(this.uniformLocation.time, [nowTime, 0.01]);
 
     // ドローコール（描画命令）
     gl.drawArrays(gl.TRIANGLES, 0, this.position.length / this.positionStride);

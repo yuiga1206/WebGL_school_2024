@@ -15,7 +15,7 @@
 import { WebGLUtility } from '../lib/webgl.js';
 
 // ドキュメントの読み込みが完了したら実行されるようイベントを設定する
-window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('DOMContentLoaded', async () => {// ★★ three.js のと一緒。
   // アプリケーションのインスタンスを初期化し、必要なリソースをロードする
   const app = new App();
   app.init();
@@ -41,7 +41,7 @@ class App {
 
   constructor() {
     // this を固定するためのバインド処理
-    this.render = this.render.bind(this);
+    this.render = this.render.bind(this);// ★★ three.js のと一緒。
   }
 
   /**
@@ -56,7 +56,7 @@ class App {
     // WebGL を利用することができません。
     // ------------------------------------------------------------------------
     this.canvas = document.getElementById('webgl-canvas');
-    this.gl = WebGLUtility.createWebGLContext(this.canvas);
+    this.gl = WebGLUtility.createWebGLContext(this.canvas);// ★★ コンテキストが取れるかどうかのチェックもしてる。
 
     // - キャンバスの初期サイズ -----------------------------------------------
     // HTML の canvas 要素は、既定での大きさは 300 x 150 ピクセル程度に設定され
@@ -127,7 +127,7 @@ class App {
     // ここでは、まずは最低限「頂点座標」の属性を付与するために、まずはそのもと
     // となるデータの定義を行っています。
     // ------------------------------------------------------------------------
-    this.position = [
+    this.position = [// ★★ jsの普通の配列。多重配列はダメ！一次元配列にする。
        0.0,  0.5,  0.0, // ひとつ目の頂点の x, y, z 座標
        0.5, -0.5,  0.0, // ふたつ目の頂点の x, y, z 座標
       -0.5, -0.5,  0.0, // みっつ目の頂点の x, y, z 座標
@@ -164,9 +164,10 @@ class App {
     // ------------------------------------------------------------------------
     const positionAttributeLocation = gl.getAttribLocation(this.program, 'position');
     // WebGLUtility.enableBuffer は引数を配列で取る仕様なので、いったん配列に入れる
-    const vboArray = [this.vbo];
+    const vboArray = [this.vbo];// ★★ enableBuffer() には配列として渡すので、配列化する。
     const attributeLocationArray = [positionAttributeLocation];
-    const strideArray = [this.stride];
+    const strideArray = [this.stride];// ★★ このアトリビュートが、いくつの要素からなるか
+    // ★★ ↑ CPUとGPUは全然違う世界なので、vec3とかstrideとか、ここまでしっかりとした擦り合わせが必要になる。
     WebGLUtility.enableBuffer(gl, vboArray, attributeLocationArray, strideArray);
   }
 
@@ -185,9 +186,11 @@ class App {
     // ですから、WebGL 側ではどのような大きさのビューポートを利用したいのか別途
     // 指定しておかなくてはなりません。
     // ------------------------------------------------------------------------
+    // ★★ x, y, w, h
+    // ★★ WebGLは左下原点なので、原点からの幅と高さ
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     // クリアする色を設定する（RGBA で 0.0 ～ 1.0 の範囲で指定する）
-    gl.clearColor(0.3, 0.3, 0.3, 1.0);
+    gl.clearColor(0.3, 0.3, 0.3, 1.0);// ★★ 設定してるだけ。
     // 実際にクリアする（gl.COLOR_BUFFER_BIT で色をクリアしろ、という指定になる）
     gl.clear(gl.COLOR_BUFFER_BIT);
   }
@@ -211,6 +214,10 @@ class App {
     // プログラムオブジェクトを選択
     gl.useProgram(this.program);
     // ドローコール（描画命令）
-    gl.drawArrays(gl.TRIANGLES, 0, this.position.length / this.stride);
+    gl.drawArrays(gl.TRIANGLES, 0, this.position.length / this.stride);// ★★ 第三引数は割り算してる
+    // ★★ gl.LINES
+    // ★★ gl.POINTS
+    // ★★ などが使える。他にもある。画像検索がおすすめ。
+    // ★★ 基本的には TRIANGLES だけを使った方が良い。考えることが減る。
   }
 }

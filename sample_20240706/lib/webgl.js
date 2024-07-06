@@ -114,8 +114,10 @@ export class WebGLUtility {
     // バッファを gl.ARRAY_BUFFER としてバインドする
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
     // バインドしたバッファに Float32Array オブジェクトに変換した配列を設定する
+    // ★★ jsは型が無いが、WebGLは「この形で、32bitで送って来いよ！」と決まっている。
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexArray), gl.STATIC_DRAW);
     // 安全のために最後にバインドを解除してからバッファオブジェクトを返す
+    // ★★ お作法的に事故を防止する意味で、丁寧にやるなら最後はバインドは解除しておきましょう。
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     return vbo;
   }
