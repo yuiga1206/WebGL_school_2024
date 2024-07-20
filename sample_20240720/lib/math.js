@@ -254,6 +254,7 @@ export class Mat4 {
    * @return {Mat4} 結果の行列
    */
   static rotate(mat, angle, axis, dest) {
+    // ★★ 第四引数が、ある場合はそれを使い、ない場合は生成する。
     let out = dest == null ? Mat4.create() : dest;
     const sq = Math.sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
     if (!sq) {

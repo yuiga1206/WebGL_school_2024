@@ -149,6 +149,7 @@ class App {
     this.colorVBO = WebGLUtility.createVBO(this.gl, this.color);
 
     // IBO を生成 @@@
+    // ★★ 頂点の結び順だけを格納している
     this.IBO = WebGLUtility.createIBO(this.gl, this.indices);
   }
 
@@ -227,6 +228,9 @@ class App {
 
     // インデックスバッファを使った場合のドローコール（描画命令） @@@
     gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
+    // ★★ UNSIGNED_SHORT == 符号無し2バイト == 0 ~ 65535 => インデックスが 65535 までは描画できる（頂点数が65535までは描画できる）
+    // ★★ WebGL 1.0 => より大きなインデックスを使いたい場合、拡張機能を有効化する必要がある
+    // ★★ -> gl.INT + Int32Array()
   }
 
   /**

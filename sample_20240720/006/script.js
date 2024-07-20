@@ -196,14 +196,15 @@ class App {
     this.setupRendering();
 
     // - 各種行列を生成する @@@ ------------------------------------------------
-    // モデル座標変換行列
+    // モデル座標変換行列（平行移動、回転、拡大縮小）
     const rotateAxis = Vec3.create(0.0, 1.0, 0.0);               // Y 軸回転を掛ける
     const m = Mat4.rotate(Mat4.identity(), nowTime, rotateAxis); // 時間の経過が回転量
+    // ★★ Mat4.identity() で単位行列を作成。
 
     // ビュー座標変換行列
     const eye         = Vec3.create(0.0, 0.0, 3.0); // カメラの位置
     const center      = Vec3.create(0.0, 0.0, 0.0); // カメラの注視点
-    const upDirection = Vec3.create(0.0, 1.0, 0.0); // カメラの天面の向き
+    const upDirection = Vec3.create(0.0, 1.0, 0.0); // カメラの天面の向き（上方向の向き）
     const v = Mat4.lookAt(eye, center, upDirection);
 
     // プロジェクション座標変換行列
@@ -215,6 +216,7 @@ class App {
 
     // 行列を乗算して MVP 行列を生成する（掛ける順序に注意）
     // ※スクールのサンプルは列優先で行列を処理しています
+    // ★★ 列優先なので、逆に掛ける。参考：http://matrixmultiplication.xyz/
     const vp = Mat4.multiply(p, v);
     const mvp = Mat4.multiply(vp, m);
     // ------------------------------------------------------------------------
