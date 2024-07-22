@@ -141,17 +141,23 @@ class App {
     const gl = this.gl;
     // ビューポートを設定する
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-    // クリアする色と深度を設定する
+
+    // ★★ 深度テストを有効化する場合、クリアされるのは、色だけでは無くて深度情報も含まれるようにする。
+    // クリアする色と深度を設定する @@@
     gl.clearColor(0.3, 0.3, 0.3, 1.0);
-    gl.clearDepth(1.0);
-    // 色と深度をクリアする
+    gl.clearDepth(1.0); // ★★ 深度値の初期値が 1.0 になる（一番遠い = 何を描画しても上に乗ってくるので描画される）
+    // ★★ 逆に 0.0 = 一番近くすると、何も描画されなくなる。全て初期値の裏に描画される。
+
+    // 色と深度をクリアする @@@
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // バックフェイスカリングの有効化と、カリング面の設定 @@@
     gl.enable(gl.CULL_FACE);
+    // ★★ カリングする面が、表なのか裏なのか、を変えることも可能。
     gl.cullFace(gl.BACK); // or gl.FRONT を設定できる
 
     // 深度テストの有効化 @@@
+    // ★★ 普通は有効化する。
     gl.enable(gl.DEPTH_TEST);
   }
 

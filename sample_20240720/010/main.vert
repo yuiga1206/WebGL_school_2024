@@ -17,6 +17,7 @@ void main() {
   float d = dot(normalize(n), normalize(light));
 
   // 内積の結果を頂点カラーの RGB 成分に乗算する
+  // ★★ 陰影計算を頂点シェーダ内で行い、フラグメントシェーダではただそれを出力しているだけ。
   vColor = vec4(color.rgb * d, color.a);
 
   // MVP 行列と頂点座標を乗算してから出力する
