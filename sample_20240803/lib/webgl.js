@@ -170,7 +170,7 @@ export class WebGLUtility {
   static createTexture(gl, resource){
     // テクスチャオブジェクトを生成
     const texture = gl.createTexture();
-    // アクティブなテクスチャユニット番号を指定する
+    // アクティブなテクスチャユニット番号を指定する（0番がアクティブ）
     gl.activeTexture(gl.TEXTURE0);
     // テクスチャをアクティブなユニットにバインドする
     gl.bindTexture(gl.TEXTURE_2D, texture);

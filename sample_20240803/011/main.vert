@@ -2,7 +2,7 @@
 attribute vec3 position;
 attribute vec3 normal;
 attribute vec4 color;
-attribute vec2 texCoord; // テクスチャ座標 @@@
+attribute vec2 texCoord; // テクスチャ座標 @@@ texture coordinate （three.jsだと UV）
 uniform mat4 mvpMatrix;
 uniform mat4 normalMatrix;
 varying vec4 vColor;
@@ -26,6 +26,8 @@ void main() {
 
   // テクスチャ座標をフラグメントシェーダに送る @@@
   vTexCoord = texCoord;
+  // ★★ ↓ 画像の横半分を貼り付ける
+  // vTexCoord = texCoord * vec2(0.5, 1.0);
 
   // MVP 行列と頂点座標を乗算してから出力する
   gl_Position = mvpMatrix * vec4(position, 1.0);
