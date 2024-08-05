@@ -90,6 +90,7 @@ class App {
 
     // 深度テストは初期状態で有効
     this.gl.enable(this.gl.DEPTH_TEST);
+    // this.gl.disable(this.gl.DEPTH_TEST); // ★★ 加算合成なら深度テストを切ると透明が使える。
 
     // 初期状態ではテクスチャが見えているようにする
     this.textureVisibility = true;
@@ -230,9 +231,12 @@ class App {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // ブレンドの設定 @@@
+    // ★★ ↓ いわゆるアルファブレンディング。ただし奥から描画すること！
     gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
     // その他の設定例（加算合成＋アルファで透明）
     // gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE, gl.ONE, gl.ONE);
+    // ★★ ↑　深度テストを切れば、加算合成は裏から見ても透明が破綻していない。
+    // ★★ 奥が光っている、ネオンのようなものとかには使えるテクニック。
   }
 
   /**

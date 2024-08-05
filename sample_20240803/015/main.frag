@@ -1,8 +1,8 @@
 precision mediump float;
 
 uniform bool        reflection;  // 法線による反射を行うかどうか
-uniform vec3        eyePosition; // 視点の座標
-uniform samplerCube textureUnit; // キューブマップテクスチャ
+uniform vec3        eyePosition; // 視点の座標（カメラのワールド空間の位置）
+uniform samplerCube textureUnit; // キューブマップテクスチャ @@@
 varying vec3        vPosition;   // モデル座標変換後の頂点の位置
 varying vec3        vNormal;     // 法線
 
@@ -16,13 +16,15 @@ void main() {
   // 反射ベクトルに用いる変数（初期状態は法線と同じにしておく）
   vec3 reflectVector = normal;
 
-  // もし反射有効なら reflect で反射ベクトルを求める
+  // もし反射有効なら reflect で反射ベクトルを求める @@@
   if (reflection == true) {
     reflectVector = reflect(eyeDirection, normal);
   }
-  // 反射ベクトルを使ってキューブマップテクスチャからサンプリング
+  // 反射ベクトルを使ってキューブマップテクスチャからサンプリング @@@
   vec4 envColor = textureCube(textureUnit, reflectVector);
 
   gl_FragColor = envColor;
+  // ★★ ↓プラスチックとかなら反射の映り込みが弱いので、数値をいじる。
+  // gl_FragColor = vColor + envColor * 0.1;
 }
 
