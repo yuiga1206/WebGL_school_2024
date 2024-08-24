@@ -83,6 +83,7 @@ class App {
     this.camera = new WebGLOrbitCamera(this.canvas, cameraOption);
 
     // フレームバッファと関連するオブジェクトを生成する @@@
+    // 128px司法の正方形のフレームバッファを作る
     this.framebufferObject = WebGLUtility.createFramebuffer(this.gl, App.BUFFER_SIZE, App.BUFFER_SIZE);
 
     // 最初に一度リサイズ処理を行っておく
@@ -135,7 +136,7 @@ class App {
         const error = new Error('not initialized');
         reject(error);
       } else {
-        // 最終シーン用のシェーダ @@@
+        // 最終シーン用のシェーダ @@@ // ★★ ボックスを描画してる方
         const renderVSSource = await WebGLUtility.loadFile('./render.vert')
         const renderFSSource = await WebGLUtility.loadFile('./render.frag')
         const renderVertexShader = WebGLUtility.createShaderObject(gl, renderVSSource, gl.VERTEX_SHADER);
@@ -147,6 +148,8 @@ class App {
         const offscreenVertexShader = WebGLUtility.createShaderObject(gl, offscreenVSSource, gl.VERTEX_SHADER);
         const offscreenFragmentShader = WebGLUtility.createShaderObject(gl, offscreenFSSource, gl.FRAGMENT_SHADER);
         this.offscreenProgram = WebGLUtility.createProgramObject(gl, offscreenVertexShader, offscreenFragmentShader);
+
+        // 質感をそれぞれ分けたいので、シェーダをそれぞれ別にしている。
         // Promsie を解決
         resolve();
       }
@@ -215,6 +218,7 @@ class App {
   setupRendering() {
     const gl = this.gl;
     // フレームバッファのバインドを解除する
+    // 自動的に、既定のフレームバッファがアクティブになり、画面に絵が出るようになる
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     // ビューポートを設定する
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
@@ -226,7 +230,8 @@ class App {
     // プログラムオブジェクトを選択
     gl.useProgram(this.renderProgram);
     // フレームバッファにアタッチされているテクスチャをバインドする
-    gl.activeTexture(gl.TEXTURE0);
+    // トーラスが描画された出来たてほやほやのレンダリング結果が、テクスチャとしてバインドされた状態
+    gl.activeTexture(gl.TEXTURE0); // テクスチャユニットは若番から埋めていく
     gl.bindTexture(gl.TEXTURE_2D, this.framebufferObject.texture);
   }
 
@@ -237,7 +242,7 @@ class App {
     const gl = this.gl;
     // フレームバッファをバインドして描画の対象とする
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebufferObject.framebuffer);
-    // ビューポートを設定する
+    // ビューポートを設定する（フレームバッファの大きさに合わせてビューポートを設定する）
     gl.viewport(0, 0, App.BUFFER_SIZE, App.BUFFER_SIZE);
     // クリアする色と深度を設定する
     gl.clearColor(1.0, 0.6, 0.9, 1.0);
@@ -285,7 +290,7 @@ class App {
 
     // - オフスクリーンレンダリング -------------------------------------------
     {
-      // レンダリングのセットアップ
+      // オフスクリーンレンダリングのセットアップ
       this.setupOffscreenRendering();
 
       // オフスクリーンシーン用のビュー行列を作る

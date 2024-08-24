@@ -128,6 +128,7 @@ class App {
   resize() {
     const gl = this.gl;
 
+    // canvas自体
     this.canvas.width  = window.innerWidth;
     this.canvas.height = window.innerHeight;
 
@@ -188,6 +189,7 @@ class App {
     const color = [1.0, 1.0, 1.0, 1.0];
 
     // plane は this.renderProgram と一緒に使う @@@
+    // 画面全体を覆う、1枚の板ポリゴン
     const size = 2.0;
     this.planeGeometry = WebGLGeometry.plane(size, size, color);
     this.planeVBO = [
@@ -317,6 +319,7 @@ class App {
     // １フレームの間に２度レンダリングする
 
     // - オフスクリーンレンダリング -------------------------------------------
+    // フレームバッファに対して、スフィアを描画する
     {
       // レンダリングのセットアップ
       this.setupOffscreenRendering();
@@ -355,6 +358,7 @@ class App {
     // ------------------------------------------------------------------------
 
     // - 最終シーンのレンダリング ---------------------------------------------
+    // スフィアがレンダリングされたテクスチャを、1枚の板に貼り付けた状態で描画するプロセス
     {
       // レンダリングのセットアップ
       this.setupRendering();

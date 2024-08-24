@@ -261,8 +261,8 @@ export class WebGLUtility {
    * @property {WebGLRenderbuffer} depthRenderBuffer - 深度バッファ用のレンダーバッファ
    * @property {WebGLTexture} texture - カラーバッファ用のテクスチャオブジェクト
    */
-  static createFramebuffer(gl, width, height){
-    const framebuffer       = gl.createFramebuffer();  // フレームバッファ
+  static createFramebuffer(gl, width, height){ // ★★ この行の createFramebuffer は独自のもの
+    const framebuffer       = gl.createFramebuffer();  // フレームバッファ // ★★ この行の createFramebuffer() はWebGLのAPIなので別物
     const depthRenderBuffer = gl.createRenderbuffer(); // レンダーバッファ
     const texture           = gl.createTexture();      // テクスチャ
     // フレームバッファをバインド
@@ -271,7 +271,7 @@ export class WebGLUtility {
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthRenderBuffer);
     // レンダーバッファを深度バッファとして設定する
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
-    // フレームバッファにレンダーバッファを関連付けする
+    // フレームバッファにレンダーバッファを関連付けする（深度バッファとして使いますよ！）
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthRenderBuffer);
     // テクスチャをユニット０にバインド
     gl.activeTexture(gl.TEXTURE0);
@@ -283,14 +283,15 @@ export class WebGLUtility {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    // フレームバッファにテクスチャを関連付けする
+    // フレームバッファにテクスチャを関連付けする（カラーバッファとして使いますよ！）
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     // すべてのオブジェクトは念の為バインドを解除しておく
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); // アクティブなフレームバッファが、規定のフレームバッファに戻る
     // 各オブジェクトを、JavaScript のオブジェクトに格納して返す
     return {
+      // フレームバッファを使うときは、バインドするのはフレームバッファだけでよい
       framebuffer: framebuffer,
       depthRenderbuffer: depthRenderBuffer,
       texture: texture
