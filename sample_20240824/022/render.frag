@@ -1,14 +1,15 @@
 precision mediump float;
 
 uniform sampler2D textureUnit; // テクスチャユニット
-uniform vec2 resolution;       // 画面の解像度
+uniform vec2 resolution;       // 画面の解像度（canvasの解像度、ビューポートの解像度）
 uniform bool horizontal;       // 縦横のどちらにぼかすかのフラグ（true == 横）
-uniform float weight[20];      // ガウシアンブラーに使うガウス係数
+uniform float weight[20];      // ガウシアンブラーに使うガウス係数 // 長さが20の配列
 
 varying vec2 vTexCoord;
 
 void main() {
   vec2 fSize = 1.0 / resolution; // フラグメントあたりの大きさ
+  // resolution = vec2(100, 100) = 1 / vec2 = vec2(0.01, 0,01)
   vec2 fc = gl_FragCoord.st;     // ピクセルサイズの座標
   vec2 texCoord = vec2(0.0);     // テクスチャ座標格納用
 

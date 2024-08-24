@@ -66,14 +66,15 @@ void main() {
   float s = snoise(gl_FragCoord.st + time * 20.0, vTexCoord, resolution);
 
   // 取得したノイズは 0.0 ～ 1.0 なので -1.0 ～ 1.0 に変換する
+  // 0.0 以上、1.0 未満
   float n = s * 2.0 - 1.0;
 
   // ノイズの歪み係数を乗算する
   n *= noiseDistortion;
 
   // テクスチャ座標を一度 -1.0 ～ 1.0 にして歪み係数を加算し、元に戻す
-  vec2 coord = (vTexCoord * 2.0 - 1.0) + n;
-  coord = coord * 0.5 + 0.5;
+  vec2 coord = (vTexCoord * 2.0 - 1.0) + n; // vTexCoord を -1 ~ 1 にする
+  coord = coord * 0.5 + 0.5; // テクスチャ座標は 0 ~ 1 じゃないとダメなので、0 ~ 1 に戻す
 
   // 歪み係数を反映したテクスチャ座標でテクスチャの色をサンプリング
   vec4 samplerColor = texture2D(textureUnit, coord);

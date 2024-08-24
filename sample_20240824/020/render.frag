@@ -62,14 +62,18 @@ float snoise(vec2 p, vec2 q, vec2 r){
 }
 
 void main() {
-  // テクスチャの色
+  // テクスチャの色（オフスクリーンで焼いた結果）
   vec4 samplerColor = texture2D(textureUnit, vTexCoord);
 
   // グレイスケール化
   float gray = dot(vec3(1.0), samplerColor.rgb) * INVERSE3;
 
   // シームレスなバリューノイズを生成する @@@
+  // rnd が 128 回呼び出される（1px の色を決めるためだけに）
   float n = snoise(gl_FragCoord.st + time * 20.0, vTexCoord, resolution);
+
+  // シームレスじゃなくてもいいなら…（端と端が繋がっていない） 動画3:05くらい 　↓書きかけ
+  // float n = noise(gl_FragCoord.st + time * 20.0, vTexCoord, resolution);
 
   // ノイズの明るさを補正する
   n *= alpha;
