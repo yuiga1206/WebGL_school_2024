@@ -64,11 +64,13 @@ class ThreeApp {
     this.camera.position.copy(ThreeApp.CAMERA_PARAM.position);
     this.camera.lookAt(ThreeApp.CAMERA_PARAM.lookAt);
 
+    // ★★ ライトの影響を受けない
     this.material = new THREE.MeshBasicMaterial({
       color: 0xffffff,
-      side: THREE.DoubleSide,
+      side: THREE.DoubleSide, // ★★ 裏表両方が描画されるように
     });
 
+    // ★★ Instanced が名前についているものが、インスタンシング専用
     this.geometry = new THREE.InstancedBufferGeometry();
     const vertices = [
        0.0,   0.0,  0.0,
@@ -92,6 +94,8 @@ class ThreeApp {
     this.geometry.setAttribute('position', attribute);
     this.geometry.setIndex(indices);
 
+    // ★★ Mesh を生成する際に、インスタンシング専用のメッシュを使う
+    // ★★ 第三引数が、インスタンスを生成する数
     this.instancedMesh = new THREE.InstancedMesh(this.geometry, this.material, 1);
 
     this.scene.add(this.instancedMesh);

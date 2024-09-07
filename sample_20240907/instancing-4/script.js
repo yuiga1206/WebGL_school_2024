@@ -119,6 +119,7 @@ class ThreeApp {
     }
     const randomStride = 1;
     // 各頂点ではなく、各インスタンスごとに値を設定したいので InstancedBufferAttribute を用いる @@@
+    // ★★ Instanced 用の BufferAttribute を使うと、各インスタンスごとに異なる値を設定できる
     const randomAttribute = new THREE.InstancedBufferAttribute(new Float32Array(random), randomStride);
     this.geometry.setAttribute('random', randomAttribute);
     this.geometry.setIndex(indices);

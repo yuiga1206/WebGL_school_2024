@@ -79,13 +79,18 @@ class ThreeApp {
     this.camera.lookAt(ThreeApp.CAMERA_PARAM.lookAt);
 
     // 自前の頂点シェーダと、対になるフラグメントシェーダのソースコードを準備 @@@
-    const vs = await ThreeApp.load('./instanced.vert');
-    const fs = THREE.ShaderLib.basic.fragmentShader;
+    const vs = await ThreeApp.load('./instanced.vert'); // ★★ 頂点シェーダ
+    const fs = THREE.ShaderLib.basic.fragmentShader; // ★★ フラグメントシェーダは完全に流用
+    // ★★ この VS と FS は、チャンクが変換される前の、独自構文のソースコード
+
     // 元にしたマテリアルの既定の uniform 変数の情報を取得 @@@
     const uniforms = THREE.ShaderLib.basic.uniforms;
     // 独自のシェーダを利用できるマテリアルを生成 @@@
+    // ★★ three.js のエコシステムにある程度依存している
     this.material = new THREE.ShaderMaterial({
+      // ★★ Object.assign(元になるやつ, くっつけるやつ)
       uniforms: Object.assign({}, uniforms, {
+        // ★★ 自分が使いたいオリジナルの uniform 変数
         time: {value: 0.0},
       }),
       vertexShader: vs,

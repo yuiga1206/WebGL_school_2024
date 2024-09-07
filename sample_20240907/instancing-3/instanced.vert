@@ -35,9 +35,13 @@ void main() {
 	#include <morphtarget_vertex>
 	#include <skinning_vertex>
 	// #include <project_vertex> ================================================
+	// ★★ 頂点座標に、MVP 行列を掛けるところまでが書かれたチャンク
+	// ★★ transformed は、attribute vec3 position; が入っているようなもの
 vec4 mvPosition = vec4( transformed, 1.0 );
 
 // ここで mvPosition に対して行った変更は、ローカル空間の頂点に対する変更と同義となる @@@
+// ★★ 原点からどれくらい x 方向に離れているか、と、サイン波を乗算して、Y に代入している
+// ★★ つまり真ん中から離れれば離れるほど、羽ばたきが大きくなる。
 float move = sin(time) * abs(mvPosition.x);
 mvPosition.y += move * 0.5;
 

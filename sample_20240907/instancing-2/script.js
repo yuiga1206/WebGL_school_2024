@@ -110,6 +110,8 @@ class ThreeApp {
       );
       // ダミーの持つ情報を行列に反映した上、それをインスタンシング用の設定値として用いる @@@
       dummy.updateMatrix();
+      // ★★ インスタンスドメッシュに、座標を設定するのに、行列を使いたいから
+      // ★★ 第一引数が、対象のインスタンス
       this.instancedMesh.setMatrixAt(i, dummy.matrix);
     }
 
